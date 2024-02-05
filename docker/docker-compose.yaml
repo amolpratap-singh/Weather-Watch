@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  opensearch:
+    image: opensearchproject/opensearch:1.0.0
+    environment:
+      - node.name=opensearch
+      - discovery.seed_hosts=opensearch
+      - cluster.initial_master_nodes=opensearch
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+
+  #weather_api_server:
+  #  build: .
+  #  ports:
+  #    - "8080:8080"
+  #  volumes:
+  #    - ./app:/app
+
+  #weather_main_app:
+  #  build: .
+  #  ports:
+  #    - "8080:8080"
+  #  volumes:
+  #    - ./app:/app
+
+
+volumes:
+  opensearch_data:
+    driver: local
