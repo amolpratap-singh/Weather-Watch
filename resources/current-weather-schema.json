@@ -28,8 +28,8 @@
         },
         "weather_code": 501,
         "description": "moderate rain",
-        "dt": "",
-        "timezone": "",
-        "retrivetimestamp": ""
+        "dt": "1661870592",
+        "timezone": 7200,
+        "retrivetimestamp": "1661870601"
     }
 }
