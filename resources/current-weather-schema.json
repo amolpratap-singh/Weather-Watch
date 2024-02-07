@@ -1,0 +1,35 @@
+{
+    "_index" : "current-weather",
+    "_type" : "_doc",
+    "_comment": "_id is a unique key which will be used by NBI as well as so need to determine",
+    "_id" : "country-pincode",
+    "_score" : "1.0",
+    "_source" : {
+        "location": {
+            "pincode": "value",
+            "lat": "value",
+            "long": "value",
+            "state": "value",
+            "country": "value"
+        },
+        "weather": {
+            "temp": 298.48,
+            "temp_min": 297.56,
+            "temp_max": 300.05,
+            "pressure": 1015,
+            "humidity": 64,
+            "sea_level": 1015,
+            "grnd_level": 933
+        },
+        "wind": {
+            "speed": 0.62,
+            "deg": 349,
+            "gust": 1.18
+        },
+        "weather_code": 501,
+        "description": "moderate rain",
+        "dt": "",
+        "timezone": "",
+        "retrivetimestamp": ""
+    }
+}
