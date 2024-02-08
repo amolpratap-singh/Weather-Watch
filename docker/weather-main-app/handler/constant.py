@@ -1,0 +1,10 @@
+PINCODE = "pincode"
+LATITUDE = "lat"
+LONGITUDE = "lon"
+TALUKA = "taluka"
+DISTRICT = "district"
+STATE = "state"
+COUNTRY = "country"
+POST_OFFICE = "postOfficeName"
+UPDATE_TIME = "updateTimestamp"
+

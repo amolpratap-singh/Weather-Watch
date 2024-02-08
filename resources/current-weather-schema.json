@@ -2,15 +2,17 @@
     "_index" : "current-weather",
     "_type" : "_doc",
     "_comment": "_id is a unique key which will be used by NBI as well as so need to determine",
-    "_id" : "country-pincode",
+    "_id" : "pincode_district_state_country",
     "_score" : "1.0",
     "_source" : {
         "location": {
-            "pincode": "value",
+            "pincode": 682554,
             "lat": "value",
             "long": "value",
-            "state": "value",
-            "country": "value"
+            "taluka": "Lakshadweep",
+            "district": "Lakshadweep",
+            "state": "LAKSHADWEEP",
+            "country": "India"
         },
         "weather": {
             "temp": 298.48,
