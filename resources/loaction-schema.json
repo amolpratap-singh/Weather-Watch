@@ -1,5 +1,5 @@
 {
-    "_index" : "current-weather",
+    "_index" : "geo-location",
     "_type" : "_doc",
     "_comment": "_id is a unique key which will be used by NBI as well as so need to determine",
     "_id" : "pincode_country",

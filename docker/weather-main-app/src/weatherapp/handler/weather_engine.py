@@ -1,9 +1,9 @@
 import logging
 
-from handler.air_quality import AirQualityIndex
-from handler.weather_data import WeatherData
-from handler.forecast_news import ForeCastNews
-from handler.geo_location import GeoLocation
+from weatherapp.handler.air_quality import AirQualityIndex
+from weatherapp.handler.weather_data import WeatherData
+from weatherapp.handler.forecast_news import ForeCastNews
+from weatherapp.handler.geo_location import GeoLocation
 
 class WeatherEngine(object):
     
@@ -21,6 +21,8 @@ class WeatherEngine(object):
                                  in update of location in Opensearch")
         except Exception as ex:
             self.logger.error(f"Error occurred during Weather Engine Thread Initiated: {ex}")
+            # TODO Provide custom raise exception to catch error
+            #raise ("Thread is not launched due to error")
             
     def launch_threads(self) -> None:
         self.logger.info("Inititalizing of thread")

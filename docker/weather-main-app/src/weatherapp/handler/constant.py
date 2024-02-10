@@ -4,7 +4,7 @@ LONGITUDE = "lon"
 TALUKA = "taluka"
 DISTRICT = "district"
 STATE = "state"
-COUNTRY = "country"
+COUNTRY_CODE = "countryCode"
 POST_OFFICE = "postOfficeName"
 UPDATE_TIME = "updateTimestamp"
 
