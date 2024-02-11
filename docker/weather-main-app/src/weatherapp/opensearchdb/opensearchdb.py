@@ -1,5 +1,6 @@
 import json
 import logging
+import urllib3
 
 from opensearchpy import OpenSearch
 from opensearchpy.exceptions import NotFoundError
@@ -7,6 +8,8 @@ from opensearchpy.exceptions import NotFoundError
 OPENSEARCH_HOST = "localhost"
 OPENSEARCH_PORT = 9200
 AUTH = ('admin', 'admin')
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class OpenSearchDB(object):
     
@@ -42,3 +45,16 @@ class OpenSearchDB(object):
     
     def create_index(self, index_name, body):
         self.es.indices.create(index=index_name, body=json.dumps(body))
+        
+    def get_all_doc(self, index_name):
+        query = {
+            "query": {"match_all": {}}
+        }
+        try:
+            response = self.es.search(index=index_name, body=query)
+            self.logger.info(f"data type of response : {type(response)}")
+            documents = [hit['_source'] for hit in response['hits']['hits']]
+            return documents
+        except NotFoundError as ex:
+            self.logger.error(f"Exception occurred during getting pincode list {ex}")
+            return None

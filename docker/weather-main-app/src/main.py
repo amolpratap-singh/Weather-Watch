@@ -6,7 +6,8 @@ from weatherapp.handler.weather_engine import WeatherEngine
 # Logging Configuration
 log_level = os.getenv("LOG_LEVEL", "INFO")
 logger = logging.getLogger("WeatherApp")
-format = logging.Formatter("%(asctime)s %(levelname)s %(name)s %(module)s %(funcName)s %(message)s")
+#format = logging.Formatter("%(asctime)s %(levelname)s %(name)s %(module)s %(funcName)s %(message)s")
+format = logging.Formatter("%(asctime)s %(levelname)s %(module)s %(funcName)s %(message)s")
 handler = logging.StreamHandler()
 handler.setFormatter(format)
 logger.addHandler(handler)
