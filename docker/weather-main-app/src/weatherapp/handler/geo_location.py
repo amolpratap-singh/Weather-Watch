@@ -3,9 +3,7 @@ import json
 import logging
 
 from weatherapp.handler import constant
-from weatherapp.opensearchdb.opensearchdb import OpenSearchDB
-
-COUNTRY_CODE="IN"
+from weatherapp.opensearchdb.opensearchclient import OpenSearchDB
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 relative_path = os.path.join(current_dir, "..", "resources", "test-pincodes.json")
@@ -37,12 +35,12 @@ class GeoLocation(object):
         if json_data:
             for data in json_data:
                 location_info = dict()
-                key = str(data.get(constant.PINCODE)) + "_" + COUNTRY_CODE
+                key = str(data.get(constant.PINCODE)) + "_" + constant.COUNTRY_CODE
                 location_info[constant.PINCODE] = data.get(constant.PINCODE)
                 location_info[constant.TALUKA] = data.get("taluk")
                 location_info[constant.DISTRICT] = data.get("districtName")
                 location_info[constant.STATE] = data.get("stateName")
-                location_info[constant.COUNTRY_CODE] = COUNTRY_CODE
+                location_info[constant.COUNTRY_CODE_KEY] = constant.COUNTRY_CODE
                 location_info[constant.POST_OFFICE] = data.get("officeName")
                 
                 if self.opensearchdb.read_doc(index_name="geo-location", doc_id=key) is None:
@@ -52,7 +50,6 @@ class GeoLocation(object):
                     self.logger.info("key is already present in geo-location index")
             return True
         return False
-    
     
     def get_pincode_list(self):
         pincode_list = list()

@@ -31,13 +31,13 @@ class WeatherEngine(object):
         forecast_news_thread = ForeCastNews("ForeCastNews", 3)
         
         self.logger.info("Starting of Threads")
-        aqi_thread.start()
         weather_data_thread.start()
+        aqi_thread.start()
         forecast_news_thread.start()
         
         self.logger.info("Threads allocated to Main")
-        aqi_thread.join()
         weather_data_thread.join()
+        aqi_thread.join()        
         forecast_news_thread.join()
         
         self.logger.info("Main thread Process Completed")

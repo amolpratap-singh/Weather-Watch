@@ -52,7 +52,6 @@ class OpenSearchDB(object):
         }
         try:
             response = self.es.search(index=index_name, body=query)
-            self.logger.info(f"data type of response : {type(response)}")
             documents = [hit['_source'] for hit in response['hits']['hits']]
             return documents
         except NotFoundError as ex:
