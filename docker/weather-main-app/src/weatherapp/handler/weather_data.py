@@ -30,7 +30,7 @@ class WeatherData(Thread):
     # TODO Provide Retry Wrapper fuction for update_lat_long func
     def update_lat_long(self, pincode):
         url = "http://api.openweathermap.org/geo/1.0/zip"
-        api_key = "cfab3b3ad777d414f6a5ee4d4750d629"
+        api_key = "" #Use the api token 
         
         params = {
             "zip": f"{pincode},IN",
