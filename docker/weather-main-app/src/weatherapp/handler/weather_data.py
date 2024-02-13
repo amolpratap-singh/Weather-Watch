@@ -1,3 +1,4 @@
+import time
 import logging
 import requests
 
@@ -20,14 +21,19 @@ class WeatherData(Thread):
     
     def run(self):
         self.logger.info(f"Weather thread started {self.thread_id} and {self.thread_name}")
-        self.update_lat_long()
-        
-    def update_lat_long(self):
+        for pincode in range(len(self.pincode_list)):
+            key = str(str(self.pincode_list[pincode]) + "_" + constant.COUNTRY_CODE)
+            result = self.opensearchdb.read_doc(index_name="geo-location", doc_id=key)
+            if constant.LATITUDE not in result.keys() and constant.LONGITUDE not in result.keys():
+                self.update_lat_long(self.pincode_list[pincode])
+     
+    # TODO Provide Retry Wrapper fuction for update_lat_long func
+    def update_lat_long(self, pincode):
         url = "http://api.openweathermap.org/geo/1.0/zip"
-        api_key = ""
+        api_key = "cfab3b3ad777d414f6a5ee4d4750d629"
         
         params = {
-            "zip": f"{self.pincode_list[0]},IN",
+            "zip": f"{pincode},IN",
             "appid": api_key
         }
         
@@ -35,22 +41,19 @@ class WeatherData(Thread):
             response = requests.get(url, params, verify=False)
         
             if response.status_code == 200:
-                print(type(response.json()))
-                print(response.json().get('lat'))
-                print(response.json().get('lon'))
-                key = str(str(self.pincode_list[0]) + "_" + constant.COUNTRY_CODE)
+                key = str(str(pincode) + "_" + constant.COUNTRY_CODE)
                 body = {
                     "lat": response.json().get("lat"),
                     "lon": response.json().get("lon")
                 }
-                #self.opensearchdb.update_doc(index_name="geo-location",doc_id=key,body=body)
+                self.opensearchdb.update_doc(index_name="geo-location",doc_id=key,body=body)
             else:
                 self.logger.info(f"Receive status code as {response.status_code}")
         except requests.exceptions.HTTPError as http_err:
-            self.logger.error(f"http error while connecting {url}")
+            self.logger.error(f"http error while connecting {url} with err: {http_err}")
         except requests.exceptions.ConnectionError as conn_err:
-            self.logger.error(f"Error while connecting {url}")
+            self.logger.error(f"Error while connecting {url} with err: {conn_err}")
         except requests.exceptions.Timeout as time_out_err:
-            self.logger.error(f"Time out error occur while connecting {url}")
+            self.logger.error(f"Time out error occur while connecting {url} with err: {time_out_err}")
         except Exception as ex:
             self.logger.error(f"Error occured while connecting {url} with {ex}")
