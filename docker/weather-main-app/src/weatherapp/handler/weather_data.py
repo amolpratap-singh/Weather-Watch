@@ -11,7 +11,7 @@ from weatherapp.opensearchdb.opensearchclient import OpenSearchDB
 
 HOST_URL = "http://api.openweathermap.org/geo/1.0/zip"
 HOST_WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather"
-API_KEY = "cfab3b3ad777d414f6a5ee4d4750d629"
+API_KEY = ""
 
 class WeatherData(Thread):
     
