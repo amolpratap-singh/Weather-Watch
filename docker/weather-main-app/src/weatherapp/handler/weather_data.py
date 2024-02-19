@@ -20,6 +20,7 @@ class WeatherData(Thread):
         self.logger = logging.getLogger("WeatherApp")
         self.thread_name = thread_name
         self.thread_id = thread_id
+        self.history_index_name = "history-weather" + "." + datetime.today().strftime("%Y-%m-%d")
         self.opensearchdb = OpenSearchDB()
         self.geo_loc = GeoLocation()
         self.pincode_list = self.geo_loc.get_pincode_list()
@@ -85,6 +86,10 @@ class WeatherData(Thread):
                                                      body=self._set_body_data(location_data, response))
                     else:
                         self.opensearchdb.update_doc(index_name="current-weather", doc_id=key,
+                                                     body=self._set_body_data(location_data, response))
+                    if self.opensearchdb.read_doc(index_name=self.history_index_name, doc_id=key) is None:
+                        self.logger.info(f"Weather data is not present in the history data for index:{self.history_index_name}")
+                        self.opensearchdb.create_doc(index_name=self.history_index_name, doc_id=key,
                                                      body=self._set_body_data(location_data, response))
                 else:
                     self.logger.info(f"Receive status code as {response.status_code}")
