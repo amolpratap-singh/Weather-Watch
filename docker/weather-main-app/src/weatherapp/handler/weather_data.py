@@ -1,6 +1,8 @@
 import time
+import urllib3
 import logging
 import requests
+import schedule
 
 from datetime import datetime
 from threading import Thread
@@ -8,6 +10,8 @@ from threading import Thread
 from weatherapp.handler import constant
 from weatherapp.handler.geo_location import GeoLocation
 from weatherapp.opensearchdb.opensearchclient import OpenSearchDB
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 HOST_URL = "http://api.openweathermap.org/geo/1.0/zip"
 HOST_WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather"
@@ -20,7 +24,7 @@ class WeatherData(Thread):
         self.logger = logging.getLogger("WeatherApp")
         self.thread_name = thread_name
         self.thread_id = thread_id
-        self.history_index_name = "history-weather" + "." + datetime.today().strftime("%Y-%m-%d")
+        self.history_index_name = "history-weather" + "." + datetime.today().strftime("%Y-%m-%d-%H")
         self.opensearchdb = OpenSearchDB()
         self.geo_loc = GeoLocation()
         self.pincode_list = self.geo_loc.get_pincode_list()
@@ -32,7 +36,15 @@ class WeatherData(Thread):
             result = self.opensearchdb.read_doc(index_name="geo-location", doc_id=key)
             if constant.LATITUDE not in result.keys() and constant.LONGITUDE not in result.keys():
                 self._set_lat_lon_db(self.pincode_list[pincode])
-        
+    
+        schedule.every(6).hours.do(self.jobs())
+        #schedule.every(60).seconds.do(self.jobs)
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
+    
+    def jobs(self):
+        self.logger.info("Jobs been schedule for every 30 seconds")
         for pincode in range(len(self.pincode_list)):
             self._set_weather_data(self.pincode_list[pincode])
     

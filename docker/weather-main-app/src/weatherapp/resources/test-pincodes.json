@@ -68,5 +68,215 @@
         "taluk": "Lakshadweep",
         "districtName": "Lakshadweep",
         "stateName": "LAKSHADWEEP"
+    },
+    {
+        "officeName": "Port Blair H.O",
+        "pincode": 744101,
+        "taluk": "Port Blair",
+        "districtName": "South Andaman",
+        "stateName": "ANDAMAN & NICOBAR ISLANDS"
+    },
+    {
+        "officeName": "Election Commission S.O",
+        "pincode": 110001,
+        "taluk": "New Delhi",
+        "districtName": "Central Delhi",
+        "stateName": "DELHI"
+    },
+    {
+        "officeName": "Secretariat S.O (Lucknow)",
+        "pincode": 226001,
+        "taluk": "Lucknow",
+        "districtName": "Lucknow",
+        "stateName": "UTTAR PRADESH"
+    },
+    {
+        "officeName": "Shimla High Court S.O",
+        "pincode": 171001,
+        "taluk": "Shimla Urban(T)",
+        "districtName": "Shimla",
+        "stateName": "HIMACHAL PRADESH"
+    },
+    {
+        "officeName": "Dehradun City S.O",
+        "pincode": 248001,
+        "taluk": "Dehradun",
+        "districtName": "Dehradun",
+        "stateName": "UTTARAKHAND"
+    },
+    {
+        "officeName": "C.P.M.G S.O",
+        "pincode": 302001,
+        "taluk": "Jaipur",
+        "districtName": "Jaipur",
+        "stateName": "RAJASTHAN"
+    },
+    {
+        "officeName": "Itanagar H.O",
+        "pincode": 791111,
+        "taluk": "Itanagar",
+        "districtName": "Papum Pare",
+        "stateName": "ARUNACHAL PRADESH"
+    },
+    {
+        "officeName": "Dispur S.O",
+        "pincode": 781005,
+        "taluk": "Gmc",
+        "districtName": "Kamrup",
+        "stateName": "ASSAM"
+    },
+    {
+        "officeName": "Patna Collectoriate S.O",
+        "pincode": 800001,
+        "taluk": "Phulwari",
+        "districtName": "Patna",
+        "stateName": "BIHAR"
+    },
+    {
+        "officeName": "Panaji H.O",
+        "pincode": 403001,
+        "taluk": "Tiswadi",
+        "districtName": "North Goa",
+        "stateName": "GOA"
+    },
+    {
+        "officeName": "Vidhansabha S.O",
+        "pincode": 382010,
+        "taluk": "Gandhinagar",
+        "districtName": "Gandhi Nagar",
+        "stateName": "GUJARAT"
+    },
+    {
+        "officeName": "HighCourt S.O",
+        "pincode": 560001,
+        "taluk": "Bangalore North",
+        "districtName": "Bangalore",
+        "stateName": "KARNATAKA"
+    },
+    {
+        "officeName": "Thiruvananthapuram  Govt Press S.O",
+        "pincode": 695001,
+        "taluk": "Thiruvananthapuram",
+        "districtName": "Thiruvananthapuram",
+        "stateName": "KERALA"
+    },
+    {
+        "officeName": "Old Secretriate S.O",
+        "pincode": 462001,
+        "taluk": "Huzur",
+        "districtName": "Bhopal",
+        "stateName": "MADHYA PRADESH"
+    },
+    {
+        "officeName": "Stock Exchange S.O",
+        "pincode": 400001,
+        "taluk": "Mumbai",
+        "districtName": "Mumbai",
+        "stateName": "MAHARASHTRA"
+    },
+    {
+        "officeName": "Imphal H.O",
+        "pincode": 795001,
+        "taluk": "Nil",
+        "districtName": "Imphal West",
+        "stateName": "MANIPUR"
+    },
+    {
+        "officeName": "Meghalaya Secretariat S.O",
+        "pincode": 793001,
+        "taluk": "Shillong",
+        "districtName": "East Khasi Hills",
+        "stateName": "MEGHALAYA"
+    },
+    {
+        "officeName": "Aizawl H.O",
+        "pincode": 796001,
+        "taluk": "Tlangnuam (Part)",
+        "districtName": "Aizawl",
+        "stateName": "MIZORAM"
+    },
+    {
+        "officeName": "Kohima H.O",
+        "pincode": 797001,
+        "taluk": "Kohima",
+        "districtName": "Kohima",
+        "stateName": "NAGALAND"
+    },
+    {
+        "officeName": "Orissa  Assembly S.O",
+        "pincode": 751001,
+        "taluk": "Bhubaneswar",
+        "districtName": "Khorda",
+        "stateName": "ODISHA"
+    },
+    {
+        "officeName": "Chandigarh G.P.O.",
+        "pincode": 160017,
+        "taluk": "Chandigarh",
+        "districtName": "Chandigarh",
+        "stateName": "CHANDIGARH"
+    },
+    {
+        "officeName": "Gangtok Bazar S.O",
+        "pincode": 737101,
+        "taluk": "Gangtok",
+        "districtName": "East Sikkim",
+        "stateName": "SIKKIM"
+    },
+    {
+        "officeName": "Chennai G.P.O.",
+        "pincode": 600001,
+        "taluk": "Chennai",
+        "districtName": "Chennai",
+        "stateName": "TAMIL NADU"
+    },
+    {
+        "officeName": "Agartala H.O",
+        "pincode": 799001,
+        "taluk": "Sadar",
+        "districtName": "West Tripura",
+        "stateName": "TRIPURA"
+    },
+    {
+        "officeName": "Council House Street S.O",
+        "pincode": 700001,
+        "taluk": "Kolkata",
+        "districtName": "Kolkata",
+        "stateName": "WEST BENGAL"
+    },
+    {
+        "officeName": "Silvassa S.O",
+        "pincode": 396230,
+        "taluk": "Dadra & Nagar Haveli",
+        "districtName": "Dadra & Nagar Haveli",
+        "stateName": "DADRA & NAGAR HAVELI"
+    },
+    {
+        "officeName": "Seetharampet S.O",
+        "pincode": 500001,
+        "taluk": "Nampally",
+        "districtName": "Hyderabad",
+        "stateName": "Telangana"
+    },
+    {
+        "officeName": "Muthayapalem B.O",
+        "pincode": 522020,
+        "taluk": "Amaravathi",
+        "districtName": "Guntur",
+        "stateName": "ANDHRA PRADESH"
+    },
+    {
+        "officeName": "Kantatoli S.O",
+        "pincode": 834001,
+        "taluk": "Ranchi",
+        "districtName": "Ranchi",
+        "stateName": "JHARKHAND"
+    },
+    {
+        "officeName": "Dayanand Nagar S.O",
+        "pincode": 492001,
+        "taluk": "Raipur",
+        "districtName": "Raipur",
+        "stateName": "CHATTISGARH"
     }
 ]

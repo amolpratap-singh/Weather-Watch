@@ -48,7 +48,8 @@ class OpenSearchDB(object):
         
     def get_all_doc(self, index_name):
         query = {
-            "query": {"match_all": {}}
+            "query": {"match_all": {}},
+            "size": 1000
         }
         try:
             response = self.es.search(index=index_name, body=query)
