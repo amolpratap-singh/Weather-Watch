@@ -11,6 +11,7 @@ services:
       - cluster.name=opensearch-cluster
       - bootstrap.memory_lock=true
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "OPENSEARCH_INITIAL_ADMIN_PASSWORD=weatherTest@123"
     ulimits:
       memlock:
         soft: -1
@@ -19,6 +20,25 @@ services:
       - "9200:9200"
     volumes:
       - opensearch_data:/usr/share/opensearch/data
+    networks:
+      - weather_app_svc
+  
+  weather-main-app:
+    build: 
+      context: .
+      dockerfile: ./weather-main-app/Dockerfile
+      args:
+        TAG: "0.0.1"
+    container_name: weather-main
+    ports:
+      - "8080:8080"
+    depends_on:
+      - opensearch
+    environment:
+      - OPENSEARCH_HOST=opensearch
+      - OPENSEARCH_PORT=9200
+    networks:
+      - weather_app_svc
 
   #weather_api_server:
   #  build: .
@@ -26,14 +46,8 @@ services:
   #    - "8080:8080"
   #  volumes:
   #    - ./app:/app
-
-  #weather_main_app:
-  #  build: .
-  #  ports:
-  #    - "8080:8080"
-  #  volumes:
-  #    - ./app:/app
-
+networks:
+  weather_app_svc: {}
 
 volumes:
   opensearch_data:
