@@ -8,6 +8,7 @@ from datetime import datetime
 from threading import Thread
 
 from weatherapp.handler import constant
+from weatherapp.utils.retry import retry_on_exception
 from weatherapp.handler.geo_location import GeoLocation
 from weatherapp.opensearchdb.opensearchclient import OpenSearchDB
 
@@ -36,18 +37,19 @@ class WeatherData(Thread):
             result = self.opensearchdb.read_doc(index_name="geo-location", doc_id=key)
             if constant.LATITUDE not in result.keys() and constant.LONGITUDE not in result.keys():
                 self._set_lat_lon_db(self.pincode_list[pincode])
-    
-        #schedule.every(6).hours.do(self.jobs())
-        schedule.every(600).seconds.do(self.jobs)
+        self.logger.info("Jobs been trigger for every 600 seconds")
+        schedule.every(6).hours.do(self.jobs())
+        #schedule.every(600).seconds.do(self.jobs)
         while True:
             schedule.run_pending()
             time.sleep(1)
     
     def jobs(self):
-        self.logger.info("Jobs been schedule for every 30 seconds")
+        self.logger.info("Jobs been schedule for every 600 seconds")
         for pincode in range(len(self.pincode_list)):
             self._set_weather_data(self.pincode_list[pincode])
     
+    @retry_on_exception(Exception, wait_time=1, delay=2)
     def _set_lat_lon_db(self, pincode):
         params = {
             "zip": f"{pincode},IN",
@@ -68,13 +70,18 @@ class WeatherData(Thread):
                 self.logger.info(f"Receive status code as {response.status_code}")
         except requests.exceptions.HTTPError as http_err:
             self.logger.error(f"http error while connecting {HOST_URL} with err: {http_err}")
+            raise http_err(f"http error while connecting {HOST_URL} with err: {http_err}")
         except requests.exceptions.ConnectionError as conn_err:
             self.logger.error(f"Error while connecting {HOST_URL} with err: {conn_err}")
+            raise conn_err(f"Error while connecting {HOST_URL} with err: {conn_err}")
         except requests.exceptions.Timeout as time_out_err:
             self.logger.error(f"Time out error occur while connecting {HOST_URL} with err: {time_out_err}")
+            raise time_out_err(f"Time out error occur while connecting {HOST_URL} with err: {time_out_err}")
         except Exception as ex:
             self.logger.error(f"Error occured while connecting {HOST_URL} with {ex}")
+            raise ex(f"Error occured while connecting {HOST_URL} with {ex}")
     
+    @retry_on_exception(Exception, wait_time=1, delay=2)
     def _set_weather_data(self, pincode):
         read_key = str(str(pincode) + "_" + constant.COUNTRY_CODE)
         location_data = self.opensearchdb.read_doc(index_name="geo-location", doc_id=read_key)
@@ -109,12 +116,16 @@ class WeatherData(Thread):
                 self.logger.info(f"{pincode} doesn't contain latitude and longitude skipping the task")
         except requests.exceptions.HTTPError as http_err:
             self.logger.error(f"http error while connecting {HOST_URL} with err: {http_err}")
+            raise http_err(f"http error while connecting {HOST_URL} with err: {http_err}")
         except requests.exceptions.ConnectionError as conn_err:
             self.logger.error(f"Error while connecting {HOST_URL} with err: {conn_err}")
+            raise conn_err(f"Error while connecting {HOST_URL} with err: {conn_err}")
         except requests.exceptions.Timeout as time_out_err:
             self.logger.error(f"Time out error occur while connecting {HOST_URL} with err: {time_out_err}")
+            raise time_out_err(f"Time out error occur while connecting {HOST_URL} with err: {time_out_err}")
         except Exception as ex:
             self.logger.error(f"Error occured while connecting {HOST_URL} with {ex}")
+            raise ex(f"Error occured while connecting {HOST_URL} with {ex}")
     
     def _set_body_data(self, location_data, response):
         body = dict()

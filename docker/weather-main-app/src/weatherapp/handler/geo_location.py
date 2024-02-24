@@ -3,6 +3,8 @@ import json
 import logging
 
 from weatherapp.handler import constant
+from weatherapp.utils.retry import retry_on_exception
+from weatherapp.Exception.exceptions import EmptyListError
 from weatherapp.opensearchdb.opensearchclient import OpenSearchDB
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -51,12 +53,18 @@ class GeoLocation(object):
             return True
         return False
     
+    @retry_on_exception(Exception, wait_time=10, max_retry=5, delay=5)
     def get_pincode_list(self):
         pincode_list = list()
         data = self.opensearchdb.get_all_doc(index_name="geo-location")
         if data is not None:
             for var in data:
                 pincode_list.append(var.get("pincode"))
+        try:
+            if not pincode_list:
+                raise ValueError(f"pincode list is empty {len(pincode_list)}")
+        except EmptyListError as ex:
+            self.logger.error(f"pincode list is empty {ex}")
         self.logger.info(f"List of Pincode present for geo-location: {pincode_list}")
         return pincode_list
         
