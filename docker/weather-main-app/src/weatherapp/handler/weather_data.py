@@ -37,8 +37,8 @@ class WeatherData(Thread):
             if constant.LATITUDE not in result.keys() and constant.LONGITUDE not in result.keys():
                 self._set_lat_lon_db(self.pincode_list[pincode])
     
-        schedule.every(6).hours.do(self.jobs())
-        #schedule.every(60).seconds.do(self.jobs)
+        #schedule.every(6).hours.do(self.jobs())
+        schedule.every(600).seconds.do(self.jobs)
         while True:
             schedule.run_pending()
             time.sleep(1)
