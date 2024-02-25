@@ -48,6 +48,7 @@ class OpenSearchDB(object):
         return result
     
     def update_doc(self, index_name, doc_id, body):
+        self.logger.info(f"Update request sent to search body for: {body}")
         self.es.update(index=index_name, id=doc_id, body={"doc": body})
     
     def create_index(self, index_name, body):

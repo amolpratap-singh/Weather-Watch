@@ -15,6 +15,7 @@ class WeatherEngine(object):
         try:
             self.logger.info("Weather Engine Initiated")
             if self.geo_location.update_geolocation():
+                self.geo_location.update_lat_lon_db()
                 self.launch_threads()
             else:
                 self.logger.info("Threads Not launched due to issue \
