@@ -2,13 +2,13 @@ import time
 import urllib3
 import logging
 import requests
-import schedule
 
 from datetime import datetime
 from threading import Thread
 
 from weatherapp.handler import constant
 from weatherapp.utils.retry import retry_on_exception
+from weatherapp.utils.schedule_jobs import schedule_interval
 from weatherapp.handler.geo_location import GeoLocation
 from weatherapp.opensearchdb.opensearchclient import OpenSearchDB
 
@@ -30,19 +30,14 @@ class WeatherData(Thread):
     
     def run(self):
         self.logger.info(f"Weather thread started {self.thread_id} and {self.thread_name}")
+        self.logger.info(f"Weather Jobs been trigger for every {12} Hours")
+        self._start()
+    
+    @schedule_interval(4)
+    def _start(self):
+        self.logger.info("Update of Weather Data in DB triggered")
         for pincode in range(len(self.pincode_list)):
             self._set_weather_data(self.pincode_list[pincode])
-        #self.logger.info("Jobs been trigger for every 600 seconds")
-        #schedule.every(6).hours.do(self.jobs())
-        #schedule.every(600).seconds.do(self.jobs)
-        #while True:
-        #    schedule.run_pending()
-        #    time.sleep(1)
-    
-    #def jobs(self):
-    #    self.logger.info("Jobs been schedule for every 600 seconds")
-    #    for pincode in range(len(self.pincode_list)):
-    #        self._set_weather_data(self.pincode_list[pincode])
     
     @retry_on_exception(Exception, wait_time=1, delay=2)
     def _set_weather_data(self, pincode):

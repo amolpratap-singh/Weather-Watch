@@ -7,6 +7,7 @@ from threading import Thread
 
 from weatherapp.handler import constant
 from weatherapp.utils.retry import retry_on_exception
+from weatherapp.utils.schedule_jobs import schedule_interval
 from weatherapp.opensearchdb.opensearchclient import OpenSearchDB
 from weatherapp.handler.geo_location import GeoLocation
 
@@ -25,21 +26,15 @@ class AirQualityIndex(Thread):
         self.pincode_list = self.geo_loc.get_pincode_list()
     
     def run(self):
-        self.logger.info(f"Air Quality index thread started {self.thread_id} and {self.thread_name}")      
-        for pincode in range(len(self.pincode_list)):
-            self._set_aqi_data(self.pincode_list[pincode])
-        
-        #self.logger.info("Jobs been trigger for every 600 seconds")
-        #schedule.every(6).hours.do(self.jobs())
-        #schedule.every(600).seconds.do(self.jobs)
-        #while True:
-        #    schedule.run_pending()
-        #    time.sleep(1)
+        self.logger.info(f"AQI thread started {self.thread_id} and {self.thread_name}")
+        self.logger.info(f"AQI Jobs been trigger for every {12} Hours")
+        self._start()
     
-    #def jobs(self):
-    #    self.logger.info("Jobs been schedule for every 600 seconds")
-    #    for pincode in range(len(self.pincode_list)):
-    #        self._set_weather_data(self.pincode_list[pincode])
+    @schedule_interval(12)
+    def _start(self):
+        self.logger.info("Update of AQI Data in DB triggered")
+        for pincode in range(len(self.pincode_list)):
+            self._set_weather_data(self.pincode_list[pincode])
         
     @retry_on_exception(Exception, wait_time=1, delay=2)
     def _set_aqi_data(self, pincode):
