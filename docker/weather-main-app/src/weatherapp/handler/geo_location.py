@@ -9,7 +9,7 @@ from weatherapp.Exception.exceptions import EmptyListError
 from weatherapp.opensearchdb.opensearchclient import OpenSearchDB
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-relative_path = os.path.join(current_dir, "..", "resources", "test-pincodes.json")
+relative_path = os.path.join(current_dir, "..", "resources", "pincodes.json")
 absolute_path = os.path.abspath(relative_path)
 
 class GeoLocation(object):
