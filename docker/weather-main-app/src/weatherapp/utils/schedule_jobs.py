@@ -10,8 +10,8 @@ def schedule_interval(interval):
         def wrapper(*args, **kwargs):
             def jobs():
                 func(*args, **kwargs)
-            #schedule.every(interval).seconds.do(jobs)
-            schedule.every(interval).hours.do(jobs)
+            schedule.every(interval).seconds.do(jobs)
+            #schedule.every(interval).hours.do(jobs)
             while True:
                 schedule.run_pending()
                 time.sleep(1)

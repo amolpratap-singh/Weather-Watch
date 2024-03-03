@@ -30,11 +30,12 @@ class AirQualityIndex(Thread):
         self.logger.info(f"AQI Jobs been trigger for every {12} Hours")
         self._start()
     
-    @schedule_interval(12)
+    # TODO Change into 4 hour for scheduling now based on seconds
+    @schedule_interval(30)
     def _start(self):
         self.logger.info("Update of AQI Data in DB triggered")
         for pincode in range(len(self.pincode_list)):
-            self._set_weather_data(self.pincode_list[pincode])
+            self._set_aqi_data(self.pincode_list[pincode])
         
     @retry_on_exception(Exception, wait_time=1, delay=2)
     def _set_aqi_data(self, pincode):

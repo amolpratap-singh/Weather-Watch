@@ -33,7 +33,8 @@ class WeatherData(Thread):
         self.logger.info(f"Weather Jobs been trigger for every {12} Hours")
         self._start()
     
-    @schedule_interval(4)
+    # TODO Change into 1 hour for scheduling now based on seconds
+    @schedule_interval(30)
     def _start(self):
         self.logger.info("Update of Weather Data in DB triggered")
         for pincode in range(len(self.pincode_list)):
