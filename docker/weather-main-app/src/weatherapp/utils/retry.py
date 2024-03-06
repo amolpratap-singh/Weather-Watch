@@ -3,7 +3,7 @@ import logging
 
 from functools import wraps
 
-from weatherapp.Exception.exceptions import EmptyListError
+from src.weatherapp.Exception.exceptions import EmptyListError
 
 logger = logging.getLogger("WeatherApp")
 

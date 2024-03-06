@@ -6,11 +6,11 @@ import requests
 from datetime import datetime
 from threading import Thread
 
-from weatherapp.handler import constant
-from weatherapp.utils.retry import retry_on_exception
-from weatherapp.utils.schedule_jobs import schedule_interval
-from weatherapp.handler.geo_location import GeoLocation
-from weatherapp.opensearchdb.opensearchclient import OpenSearchDB
+from src.weatherapp.handler import constant
+from src.weatherapp.utils.retry import retry_on_exception
+from src.weatherapp.utils.schedule_jobs import schedule_interval
+from src.weatherapp.handler.geo_location import GeoLocation
+from src.weatherapp.opensearchdb.opensearchclient import OpenSearchDB
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

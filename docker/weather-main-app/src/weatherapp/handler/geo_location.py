@@ -3,10 +3,10 @@ import json
 import logging
 import requests
 
-from weatherapp.handler import constant
-from weatherapp.utils.retry import retry_on_exception
-from weatherapp.Exception.exceptions import EmptyListError
-from weatherapp.opensearchdb.opensearchclient import OpenSearchDB
+from src.weatherapp.handler import constant
+from src.weatherapp.utils.retry import retry_on_exception
+from src.weatherapp.Exception.exceptions import EmptyListError
+from src.weatherapp.opensearchdb.opensearchclient import OpenSearchDB
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 relative_path = os.path.join(current_dir, "..", "resources", "pincodes.json")

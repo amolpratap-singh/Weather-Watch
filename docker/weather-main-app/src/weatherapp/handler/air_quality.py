@@ -5,11 +5,11 @@ import requests
 from datetime import datetime
 from threading import Thread
 
-from weatherapp.handler import constant
-from weatherapp.utils.retry import retry_on_exception
-from weatherapp.utils.schedule_jobs import schedule_interval
-from weatherapp.opensearchdb.opensearchclient import OpenSearchDB
-from weatherapp.handler.geo_location import GeoLocation
+from src.weatherapp.handler import constant
+from src.weatherapp.utils.retry import retry_on_exception
+from src.weatherapp.utils.schedule_jobs import schedule_interval
+from src.weatherapp.opensearchdb.opensearchclient import OpenSearchDB
+from src.weatherapp.handler.geo_location import GeoLocation
 
 class AirQualityIndex(Thread):
     
