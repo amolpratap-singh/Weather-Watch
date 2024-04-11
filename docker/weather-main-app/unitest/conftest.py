@@ -1,5 +1,7 @@
+import sys
 import pytest
 
+sys.dont_write_bytecode = True
 
 
 WEATHER_RESPONSE = {
