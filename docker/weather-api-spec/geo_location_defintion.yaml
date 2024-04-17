@@ -21,7 +21,7 @@ paths:
         by Weather Watch application
       operationId: listV1GeoLocation
       tags:
-        - v1_geo-locations
+        - v1_geo_locations
       parameters:
         - name: pincode
           in: query

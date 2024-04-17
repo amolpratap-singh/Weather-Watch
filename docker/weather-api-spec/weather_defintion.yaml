@@ -1,0 +1,199 @@
+openapi: "3.0.0"
+info:
+  title: Weather Watch API
+  version: 1.0.0
+  description: |-
+    The API furnishes data concerning the current, historical, and forecasted weather 
+    conditions for various locations in India.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: amolpratap.singh@yahoo.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+paths:
+  /v1/currentWeather:
+    get:
+      summary: List the current weather
+      description: |-
+        API used to get the list of Current Weather Information for India
+      operationId: listV1CurrentWeather
+      tags:
+        - v1_current_weather
+      parameters:
+        - name: pincode
+          in: query
+          description: |-
+            If pincode query attribute provided, response will contain the weather record 
+            for that Geo Location.
+          required: false
+          schema:
+            type: string
+        - name: state
+          in: query
+          description: |-
+            If state query attribute provided, response will contain the weather record 
+            for that Geo Location.
+          required: false
+          schema:
+            type: string
+        - name: district
+          in: query
+          description: |-
+            If district query attribute provided, response will contain the weather record 
+            for that Geo Location.
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: |-
+            It display the list from the startFrom value till th value provided in
+            the limit attribute. If limit is not provided it will provide till default 
+            value which is 100.
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 100
+      responses:
+        "200":
+            description: List of Current Weather Information.
+            headers:
+              x-next:
+                description: Link to the next page of response
+                schema:
+                  type: string
+              x-total-count:
+                description: Total number of records found for request.
+                schema:
+                  type: integer
+                  format: int32
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/V1CurrentWeather'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Error'
+components:
+  schemas:
+    V1Error:
+      type: object
+      properties:
+        code:
+          format: int32
+          type: integer
+        message:
+          type: string
+      required:
+        - code
+        - message
+    V1CurrentWeather:
+      type: object
+      properties:
+        location:
+          type: object
+          properties:
+            pincode:
+              type: integer
+            taluka:
+              type: string
+            district:
+              type: string
+            state:
+              type: string
+            countryCode:
+              type: string
+            postOfficeName:
+              type: string
+            lon:
+              type: number
+              format: float
+            lat:
+              type: number
+              format: float
+          required:
+            - pincode
+            - taluka
+            - district
+            - state
+            - countryCode
+            - postOfficeName
+            - lon
+            - lat
+        wind:
+          type: object
+          properties:
+            speed:
+              type: number
+              format: float
+            deg:
+              type: integer
+            gust:
+              type: number
+              format: float
+          required:
+            - speed
+            - deg
+            - gust
+        weather:
+          type: object
+          properties:
+            temp:
+              type: number
+              format: float
+            feels_like:
+              type: number
+              format: float
+            temp_min:
+              type: number
+              format: float
+            temp_max:
+              type: number
+              format: float
+            pressure:
+              type: integer
+            humidity:
+              type: integer
+            sea_level:
+              type: integer
+            grnd_level:
+              type: integer
+          required:
+            - temp
+            - feels_like
+            - temp_min
+            - temp_max
+            - pressure
+            - humidity
+            - sea_level
+            - grnd_level
+        weatherCode:
+          type: integer
+        description:
+          type: string
+        epochTime:
+          type: integer
+        dt:
+          type: integer
+        timezone:
+          type: integer
+        eventTime:
+          type: string
+          format: date-time
+      required:
+        - location
+        - wind
+        - weather
+        - weatherCode
+        - description
+        - epochTime
+        - dt
+        - timezone
+        - eventTime
