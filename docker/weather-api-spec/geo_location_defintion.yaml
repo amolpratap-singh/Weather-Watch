@@ -19,7 +19,7 @@ paths:
       description: |-
         API used to get the list of Geo Location Information supported 
         by Weather Watch application
-      operationId: listV1Geolocation
+      operationId: listV1GeoLocation
       tags:
         - v1_geo-locations
       parameters:
@@ -53,5 +53,77 @@ paths:
             It display the list from the startFrom value till th value provided in
             the limit attribute. If limit is not provided it will provide till default 
             value which is 100.
-          
-
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 100
+      responses:
+        "200":
+            description: List of Geo Location.
+            headers:
+              x-next:
+                description: Link to the next page of response
+                schema:
+                  type: string
+              x-total-count:
+                description: Total number of records found for request.
+                schema:
+                  type: integer
+                  format: int32
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/V1GeoLocation'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Error'
+components:
+  schemas:
+    V1Error:
+      type: object
+      properties:
+        code:
+          format: int32
+          type: integer
+        message:
+          type: string
+      required:
+        - code
+        - message
+    V1GeoLocation:
+      type: object
+      properties:
+        pincode:
+          type: integer
+          format: int32
+        taluka:
+          type: string
+        district:
+          type: string
+        state:
+          type: string
+        countryCode:
+          type: string
+        postOfficeName:
+          type: string
+        lon:
+          type: number
+          format: float
+        lat:
+          type: number
+          format: float
+      required:
+        - pincode
+        - taluka
+        - district
+        - state
+        - countryCode
+        - postOfficeName
+        - lon
+        - lat
