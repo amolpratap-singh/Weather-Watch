@@ -1,0 +1,57 @@
+openapi: "3.0.0"
+info:
+  title: Weather Watch Geo Location API
+  version: 1.0.0
+  description: |-
+    API provides record related to the Geo Location of India which contains
+    pincode, latitude, longtitude, state, districts and taluka. API can be
+    extended for further countries to provide the information.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: amolpratap.singh@yahoo.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+paths:
+  /v1/geo-locations:
+    get:
+      summary: List all the Geo Location supported by Weather Watch application
+      description: |-
+        API used to get the list of Geo Location Information supported 
+        by Weather Watch application
+      operationId: listV1Geolocation
+      tags:
+        - v1_geo-locations
+      parameters:
+        - name: pincode
+          in: query
+          description: |-
+            If pincode query attribute provided, response will contain the record 
+            for that Geo Location.
+          required: false
+          schema:
+            type: string
+        - name: state
+          in: query
+          description: |-
+            If state query attribute provided, response will contain the record 
+            for that Geo Location.
+          required: false
+          schema:
+            type: string
+        - name: district
+          in: query
+          description: |-
+            If district query attribute provided, response will contain the record 
+            for that Geo Location.
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: |-
+            It display the list from the startFrom value till th value provided in
+            the limit attribute. If limit is not provided it will provide till default 
+            value which is 100.
+          
+
