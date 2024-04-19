@@ -6,7 +6,7 @@ from swagger_server.models.v1_geo_location import V1GeoLocation  # noqa: E501
 from swagger_server import util
 
 
-def list_v1_geo_location(pincode=None, state=None, district=None, limit=None):  # noqa: E501
+def list_geo_locations(pincode=None, state=None, district=None, limit=None):  # noqa: E501
     """List all the Geo Location supported by Weather Watch application
 
     API used to get the list of Geo Location Information supported  by Weather Watch application # noqa: E501

@@ -19,7 +19,7 @@ paths:
       description: |-
         API used to get the list of Geo Location Information supported 
         by Weather Watch application
-      operationId: listV1GeoLocation
+      operationId: listGeoLocations
       tags:
         - v1_geo_locations
       parameters:
