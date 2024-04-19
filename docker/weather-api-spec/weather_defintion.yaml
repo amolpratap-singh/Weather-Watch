@@ -81,7 +81,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/V1Error'
-  /v1/historyWeatger:
+  /v1/historyWeather:
     get:
       summary: List the historical weather Information
       description: |-
@@ -125,6 +125,22 @@ paths:
             type: integer
             format: int32
             default: 100
+        - name: startTime
+          in: query
+          description: |-
+            Timestamp in epoch format. Filters the weather record that occurred between
+            start time and end time, inclusive of end time.
+          required: false
+          schema:
+            type: string
+        - name: endTime
+          in: query
+          description: |-
+            Timestamp in epoch format. Filters the weather record that occurred between
+            start time and end time, inclusive of end time.
+          required: false
+          schema:
+            type: string
       responses:
         "200":
             description: List of historical Weather Information.
