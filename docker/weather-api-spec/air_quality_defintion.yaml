@@ -3,7 +3,7 @@ info:
   title: Weather Watch API
   version: 1.0.0
   description: |-
-    The API furnishes data concerning the current, historical, and forecasted weather 
+    The API furnishes data concerning the current and historical AQI 
     conditions for various locations in India.
   termsOfService: http://swagger.io/terms/
   contact:
@@ -12,19 +12,19 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 paths:
-  /v1/currentWeather:
+  /v1/currentAirQualityIndex:
     get:
-      summary: List the current weather
+      summary: List the current air quality index of a location
       description: |-
-        API used to get the list of Current Weather Information for India
-      operationId: listCurrentWeather
+        API used to get the list of Current Air Quality Index Information for India
+      operationId: listCurrentAirQualityIndex
       tags:
-        - v1_weather
+        - v1_aqi
       parameters:
         - name: pincode
           in: query
           description: |-
-            If pincode query attribute provided, response will contain the weather record 
+            If pincode query attribute provided, response will contain the AQI record 
             for that Geo Location.
           required: false
           schema:
@@ -32,7 +32,7 @@ paths:
         - name: state
           in: query
           description: |-
-            If state query attribute provided, response will contain the weather record 
+            If state query attribute provided, response will contain the AQI record 
             for that Geo Location.
           required: false
           schema:
@@ -40,7 +40,7 @@ paths:
         - name: district
           in: query
           description: |-
-            If district query attribute provided, response will contain the weather record 
+            If district query attribute provided, response will contain the AQI record 
             for that Geo Location.
           required: false
           schema:
@@ -58,7 +58,7 @@ paths:
             default: 100
       responses:
         "200":
-            description: List of Current Weather Information.
+            description: List of Current Weather AQI Information.
             headers:
               x-next:
                 description: Link to the next page of response
@@ -74,7 +74,7 @@ paths:
                 schema:
                   type: array
                   items:
-                    $ref: '#/components/schemas/V1CurrentWeather'
+                    $ref: '#/components/schemas/V1AirQualityIndex'
         default:
           description: Unexpected Error
           content:
@@ -83,17 +83,17 @@ paths:
                 $ref: '#/components/schemas/V1Error'
   /v1/historyWeather:
     get:
-      summary: List the historical weather Information
+      summary: List the historical AQI Information
       description: |-
-        API used to get the list of historical Weather Information for India
+        API used to get the list of historical AQI Information for India
       operationId: listHistoryWeather
       tags:
-        - v1_weather
+        - v1_aqi
       parameters:
         - name: pincode
           in: query
           description: |-
-            If pincode query attribute provided, response will contain the weather record 
+            If pincode query attribute provided, response will contain the AQI record 
             for that Geo Location.
           required: false
           schema:
@@ -101,7 +101,7 @@ paths:
         - name: state
           in: query
           description: |-
-            If state query attribute provided, response will contain the weather record 
+            If state query attribute provided, response will contain the AQI record 
             for that Geo Location.
           required: false
           schema:
@@ -109,7 +109,7 @@ paths:
         - name: district
           in: query
           description: |-
-            If district query attribute provided, response will contain the weather record 
+            If district query attribute provided, response will contain the AQI record 
             for that Geo Location.
           required: false
           schema:
@@ -143,7 +143,7 @@ paths:
             type: string
       responses:
         "200":
-            description: List of historical Weather Information.
+            description: List of historical AQI Information.
             headers:
               x-next:
                 description: Link to the next page of response
@@ -159,7 +159,7 @@ paths:
                 schema:
                   type: array
                   items:
-                    $ref: '#/components/schemas/V1CurrentWeather'
+                    $ref: '#/components/schemas/V1AirQualityIndex'
         default:
           description: Unexpected Error
           content:
@@ -179,7 +179,7 @@ components:
       required:
         - code
         - message
-    V1CurrentWeather:
+    V1AirQualityIndex:
       type: object
       properties:
         location:
@@ -212,73 +212,55 @@ components:
             - postOfficeName
             - lon
             - lat
-        wind:
-          type: object
-          properties:
-            speed:
-              type: number
-              format: float
-            deg:
-              type: integer
-            gust:
-              type: number
-              format: float
-          required:
-            - speed
-            - deg
-            - gust
-        weather:
-          type: object
-          properties:
-            temp:
-              type: number
-              format: float
-            feels_like:
-              type: number
-              format: float
-            temp_min:
-              type: number
-              format: float
-            temp_max:
-              type: number
-              format: float
-            pressure:
-              type: integer
-            humidity:
-              type: integer
-            sea_level:
-              type: integer
-            grnd_level:
-              type: integer
-          required:
-            - temp
-            - feels_like
-            - temp_min
-            - temp_max
-            - pressure
-            - humidity
-            - sea_level
-            - grnd_level
-        weatherCode:
+        aqi:
           type: integer
-        description:
-          type: string
+        components:
+          type: object
+          properties:
+            co:
+              type: number
+              format: float
+            no:
+              type: number
+              format: float
+            no2:
+              type: number
+              format: float
+            o3:
+              type: number
+              format: float
+            so2:
+              type: number
+              format: float
+            pm2_5:
+              type: number
+              format: float
+            pm10:
+              type: number
+              format: float
+            nh3:
+              type: number
+              format: float
+          required:
+            - co
+            - no
+            - no2
+            - o3
+            - so2
+            - pm2_5
+            - pm10
+            - nh3
         epochTime:
           type: integer
         dt:
-          type: integer
-        timezone:
           type: integer
         eventTime:
           type: string
           format: date-time
       required:
         - location
-        - wind
-        - weather
-        - weatherCode
-        - description
+        - aqi
+        - components
         - epochTime
         - dt
-        - timezone
         - eventTime
