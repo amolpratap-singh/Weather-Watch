@@ -45,6 +45,12 @@ paths:
           required: false
           schema:
             type: string
+        - name: pageRef
+          in: query
+          description: Pagination Reference Index
+          required: false
+          schema:
+            type: string
         - name: limit
           in: query
           description: |-
@@ -56,6 +62,23 @@ paths:
             type: integer
             format: int32
             default: 100
+        - name: order
+          in: query
+          description: |-
+            The response order will be based on the value passed.
+            ascending(0) or descending(1)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: sortBy
+          in: query
+          description: |-
+            The response would be sorted based on one of the attribute passed.
+            Attributes are : eventTime, state or district.
+          schema:
+            type: string
       responses:
         "200":
             description: List of Current Weather Information.
