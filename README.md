@@ -33,6 +33,10 @@ API endpoint provided by the Weather-Watch for users to retrieves current & hist
 
 **Endpoint:** `GET /v1/currentWeather`
 
+##### Parameters
+
+- `pincode` (optional): record will contain the weather information for the Geo Location.
+
 #### Responses
 
 - **200 OK**
