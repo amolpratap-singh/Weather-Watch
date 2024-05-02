@@ -75,7 +75,7 @@ API endpoint provided by the Weather-Watch for users to retrieves current & hist
             "epochTime": 0,
             "dt": 0,
             "timezone": 0,
-            "eventTime": "2024-05-01T16:53:10.899Z"
+            "eventTime": "string"
         }
     ]
     ```
@@ -130,7 +130,7 @@ API endpoint provided by the Weather-Watch for users to retrieves current & hist
             "epochTime": 0,
             "dt": 0,
             "timezone": 0,
-            "eventTime": "2024-05-01T17:01:15.933Z"
+            "eventTime": "string"
         }
     ]
     ```
