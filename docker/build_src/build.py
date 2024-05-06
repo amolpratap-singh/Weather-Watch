@@ -8,6 +8,7 @@ api_ctrl_dir = os.getenv("API_SERVER_DIR", "weather-api-server-app")
 
 #target_dir = os.path.join(build_src_dir, "weather-api-server")
 target_dir = "weather-api-server-app"
+base_config_file = os.path.join(build_src_dir, "base_configuration.yaml")
 
 final_spec = dict()
 final_spec['paths'] = dict()
@@ -32,4 +33,19 @@ for file in os.listdir(api_spec_dir):
         with open(os.path.join(api_spec_dir, file)) as f:
             new_spec = yaml.safe_load(f)
             merge_dict(new_spec, final_spec)
+            
+# Addition of base configuration file to final spec
+with open(base_config_file) as f:
+    new_spec = yaml.safe_load(f)
+    final_spec.update(new_spec)
+    
+print(final_spec)
+
+# Creation of Final spec
+out_spec_file = os.path.join(build_src_dir, "weather_watch_api.yaml")
+with open(out_spec_file, mode="w") as f:
+    yaml.safe_dump(final_spec, f)
+    
+# Generate models using swagger-codegen-cli
+#os.system(f"java -jar swagger-codegen-cli.jar generate -i {out_spec_file} -l python-flask -o {target_dir}")
         

@@ -289,7 +289,7 @@ components:
               format: float
           required:
             - co
-            - no
+            - "no"
             - no2
             - o3
             - so2
