@@ -29,6 +29,8 @@ RUN mvn clean package
 FROM ubuntu:latest as builder
 
 ARG API_SERVER_BUILD
+ARG SWAGGER_VERSION
+ARG SWAGGER_CODEGEN_BUILD_REPO
 
 # Java 11 and Python 3.12 installation
 RUN apt-get update && \
