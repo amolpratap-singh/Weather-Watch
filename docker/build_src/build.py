@@ -50,7 +50,7 @@ with open(out_spec_file, mode="w") as f:
 #os.system(f"java -jar swagger-codegen-cli.jar generate -i {out_spec_file} -l python-flask -o {target_dir}")
 
 # Copy the Controllers
-dst_controllers_dir = os.path.join(target_dir, 'swagger_server', 'controllers')
-print(f"dst_controllers_dir: {dst_controllers_dir} ")
+#dst_controllers_dir = os.path.join(target_dir, 'swagger_server', 'controllers')
+#print(f"dst_controllers_dir: {dst_controllers_dir} ")
 
-src_controllers_dir = os.path.join(src)
+#src_controllers_dir = os.path.join(src)

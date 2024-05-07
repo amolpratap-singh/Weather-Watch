@@ -5,6 +5,7 @@ ARG SWAGGER_CODEGEN=https://github.com/swagger-api/swagger-codegen/archive/
 ARG SWAGGER_VERSION=swagger-codegen-3.0.35
 ARG SWAGGER_PACKAGE=v3.0.35.tar.gz
 ARG SWAGGER_CODEGEN_BUILD_REPO=/usr/local/codegen_build
+ARG API_SERVER_BUILD=/usr/local/api_server
 
 # Swagger Codegen Build Layer
 FROM maven:3.8.1-jdk-11 as swagger_builder
@@ -24,15 +25,40 @@ WORKDIR ${SWAGGER_CODEGEN_BUILD_REPO}/${SWAGGER_VERSION}
 
 RUN mvn clean package
 
-# Final Layer
-FROM openjdk:11-jdk-slim
+# Second Layer with swagger codegen controller generation
+FROM ubuntu:latest as builder
 
-ARG SWAGGER_VERSION
-ARG SWAGGER_CODEGEN_BUILD_REPO
+# Java 11 installation
+RUN apt-get update && \
+    apt-get install -y openjdk-11-jdk && \
+    apt-get clean;
 
-COPY --from=swagger_builder ${SWAGGER_CODEGEN_BUILD_REPO}/${SWAGGER_VERSION} /opt/swagger-codegen
+# Python3.1
+RUN apt-get install -y python3.12
 
-WORKDIR /opt/swagger-codegen
+# Set the default Java and Python versions
+RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-11-openjdk-amd64/bin/java 1 && \
+    update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java && \
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1 && \
+    update-alternatives --set python3 /usr/bin/python3.12
+
+# Set environment variables
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+ENV PATH="$PATH:$JAVA_HOME/bin"
+
+
+
+
+
+
+#FROM openjdk:11-jdk-slim as builder
+
+#ARG SWAGGER_VERSION
+#ARG SWAGGER_CODEGEN_BUILD_REPO
+
+#COPY --from=swagger_builder ${SWAGGER_CODEGEN_BUILD_REPO}/${SWAGGER_VERSION} /opt/swagger-codegen
+
+#WORKDIR /opt/swagger-codegen
 
 # Define entry point or default command if needed
 # ENTRYPOINT ["java", "-jar", "swagger-codegen-cli.jar"]
