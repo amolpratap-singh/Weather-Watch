@@ -28,26 +28,34 @@ RUN mvn clean package
 # Second Layer with swagger codegen controller generation
 FROM ubuntu:latest as builder
 
-# Java 11 installation
-RUN apt-get update && \
-    apt-get install -y openjdk-11-jdk && \
-    apt-get clean;
+ARG API_SERVER_BUILD
 
-# Python3.1
-RUN apt-get install -y python3.12
+# Java 11 and Python 3.12 installation
+RUN apt-get update && \
+ apt-get install -y openjdk-11-jdk && \
+ apt-get install -y python3.12 && \
+ apt-get clean;
 
 # Set the default Java and Python versions
 RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-11-openjdk-amd64/bin/java 1 && \
-    update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java && \
-    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1 && \
-    update-alternatives --set python3 /usr/bin/python3.12
+ update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java && \
+ update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1 && \
+ update-alternatives --set python3 /usr/bin/python3.12
 
 # Set environment variables
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ENV PATH="$PATH:$JAVA_HOME/bin"
 
+RUN mkdir -p ${API_SERVER_BUILD}
 
+WORKDIR ${API_SERVER_BUILD}
 
+COPY build_src ${API_SERVER_BUILD}/build_src
+COPY weather-api-server/src/controllers ${API_SERVER_BUILD}/src/controllers
+COPY weather-api-spec ${API_SERVER_BUILD}/weather-api-spec
+COPY --from=swagger_builder ${SWAGGER_CODEGEN_BUILD_REPO}/${SWAGGER_VERSION}/modules/swagger-codegen-cli/target/swagger-codegen-cli.jar swagger-codegen-cli.jar
+
+RUN /usr/bin/python3.12 build_src/build.py
 
 
 
