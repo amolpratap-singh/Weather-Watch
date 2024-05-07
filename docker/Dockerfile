@@ -38,27 +38,44 @@ RUN apt-get update && \
  apt-get clean;
 
 # Installation of Python 3.12
-RUN apt-get update && \
- apt-get install -y python3.12 && \
- apt-get clean;
+#RUN apt-get update && \
+# apt-get install -y python3.12 && \
+# apt-get clean;
 
 # Install pip for Python 3
-RUN apt-get update && \
- apt-get install -y python3-pip && \
- apt-get clean;
+#RUN apt-get update && \
+# apt-get install -y python3-pip && \
+# apt-get clean;
 
 # Set the default Java and Python versions
-RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-11-openjdk-amd64/bin/java 1 && \
- update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java && \
- update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1 && \
- update-alternatives --set python3 /usr/bin/python3.12
+#RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-11-openjdk-amd64/bin/java 1 && \
+# update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java && \
+# update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1 && \
+# update-alternatives --set python3 /usr/bin/python3.12
+
+# Update the package lists and install required packages
+RUN apt-get update && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get update && \
+    apt-get install -y python3.11 python3.11-distutils python3.11-venv python3.11-dev && \
+    apt-get clean;
+
+RUN apt-get install -y curl && \
+ apt-get clean;
+
+# Install pip for Python 3.12
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python3.11 get-pip.py && \
+    rm get-pip.py
+
+# Install any Python packages using pip3
+COPY requirements.txt /tmp
+RUN python3.11 -m pip install --no-cache-dir -r /tmp/requirements.txt
 
 # Set environment variables
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ENV PATH="$PATH:$JAVA_HOME/bin"
-
-# Install pyyaml package
-RUN pip3 install --no-cache-dir -r requirements.txt
 
 RUN mkdir -p ${API_SERVER_BUILD}
 
@@ -69,7 +86,7 @@ COPY weather-api-server-app/src/controllers ${API_SERVER_BUILD}/src/controllers
 COPY weather-api-spec ${API_SERVER_BUILD}/weather-api-spec
 #COPY --from=swagger_builder ${SWAGGER_CODEGEN_BUILD_REPO}/${SWAGGER_VERSION}/modules/swagger-codegen-cli/target/swagger-codegen-cli.jar swagger-codegen-cli.jar
 
-RUN /usr/bin/python3.12 build_src/build.py
+RUN /usr/bin/python3.11 build_src/build.py
 
 
 
