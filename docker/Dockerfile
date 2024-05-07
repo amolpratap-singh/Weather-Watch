@@ -43,21 +43,22 @@ RUN apt-get update && \
  apt-get clean;
 
 # Install pip for Python 3
-RUN apt-get install -y python3-pip && \
+RUN apt-get update && \
+ apt-get install -y python3-pip && \
  apt-get clean;
 
-# Install pyyaml package
-RUN pip3 install pyyaml
-
 # Set the default Java and Python versions
-#RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-11-openjdk-amd64/bin/java 1 && \
-# update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java && \
-# update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1 && \
-# update-alternatives --set python3 /usr/bin/python3.12
+RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-11-openjdk-amd64/bin/java 1 && \
+ update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java && \
+ update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1 && \
+ update-alternatives --set python3 /usr/bin/python3.12
 
 # Set environment variables
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ENV PATH="$PATH:$JAVA_HOME/bin"
+
+# Install pyyaml package
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 RUN mkdir -p ${API_SERVER_BUILD}
 
