@@ -76,11 +76,13 @@ COPY build_src ${API_SERVER_BUILD}/build_src
 COPY weather-api-server-app/src/controllers ${API_SERVER_BUILD}/src/controllers
 COPY weather-api-spec ${API_SERVER_BUILD}/weather-api-spec
 COPY --from=swagger_builder ${SWAGGER_CODEGEN_BUILD_REPO}/${SWAGGER_VERSION}/modules/swagger-codegen-cli/target/swagger-codegen-cli.jar swagger-codegen-cli.jar
-COPY weather-api-server-app/src/*.py ${API_SERVER_BUILD}/src
 
 RUN /usr/bin/python3.11 build_src/build.py
 
+RUN mv ${API_SERVER_BUILD}/build_src/src/swagger_server ${API_SERVER_BUILD}/swagger_server
+COPY weather-api-server-app/src/*.py ${API_SERVER_BUILD}/swagger_server
 COPY app.py ${API_SERVER_BUILD}
 
+# CMD gunicorn swagger_server.wsgi:app uvicorn.workers.UvicornWorker
 
 CMD ["python3","app.py"]
