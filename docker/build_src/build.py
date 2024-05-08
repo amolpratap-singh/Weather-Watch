@@ -1,4 +1,5 @@
 import os
+import re
 import yaml
 import shutil
 
@@ -37,7 +38,7 @@ for file in os.listdir(api_spec_dir):
 with open(base_config_file) as f:
     new_spec = yaml.safe_load(f)
     final_spec.update(new_spec)
-    
+
 print(final_spec)
 
 # Creation of Final spec
@@ -56,9 +57,37 @@ src_controllers_dir = os.path.join(api_ctrl_dir, 'controllers')
 print(f"src_controller_dir: {src_controllers_dir}")
 
 for file in os.listdir(src_controllers_dir):
-    print(file)
-
-for file in os.listdir(src_controllers_dir):
     shutil.copy(os.path.join(src_controllers_dir, file), dst_controllers_dir)
+    
+# TODO just check is it required or not
+# Update of Generated controllers
+for file in os.listdir(dst_controllers_dir):
+    if re.match('v[0-9]*(_[a-z0-9]*)+_controller.py', file):
+        file_path = os.path.join(dst_controllers_dir, file)
+        
+        with open(file_path) as f:
+            content = f.readlines()
+        import_file = f"{file.split('.')[0]}_defined"
+        content.insert(0, f"""import inspect
+from utils import gen_utils
+from swagger_server.controllers import {import_file}
+""")
+        func_name = ''
+        for func in content:
+            if func.startswith('def '):
+                func_name = func.split('(')[0].split()[1]
+            if func.__contains__('.is_josn:'):
+                index = content.index(func)
+                content[index] = func.replace('.is_json:', '.mimetype == "application/json":')
+            if func.__contains__('.get_json()'):
+                index = content.index(func)
+                content[index] = func.replace('body = ', 'pass # body = ')
+            if func.__contains__("return 'do some magic!'"):
+                return_func = func.replace("return 'do some magic!'",
+                                           f"return gen_utils.call_function({import_file}.{func_name}, inspect.currentframe().f_locals)")
+                index = content.index(func)
+                content[index] = return_func
+        with open(file_path, mode='w') as w:
+            w.writelines(content)
 
 

@@ -1,0 +1,591 @@
+components:
+  schemas:
+    V1AirQualityIndex:
+      properties:
+        aqi:
+          type: integer
+        components:
+          properties:
+            Co:
+              format: float
+              type: number
+            Nh3:
+              format: float
+              type: number
+            NitricOxide:
+              format: float
+              type: number
+            No2:
+              format: float
+              type: number
+            O3:
+              format: float
+              type: number
+            So2:
+              format: float
+              type: number
+            pm10:
+              format: float
+              type: number
+            pm2_5:
+              format: float
+              type: number
+          required:
+          - Co
+          - NitricOxide
+          - No2
+          - O3
+          - So2
+          - pm2_5
+          - pm10
+          - Nh3
+          type: object
+        dt:
+          type: integer
+        epochTime:
+          type: integer
+        eventTime:
+          format: date-time
+          type: string
+        location:
+          properties:
+            countryCode:
+              type: string
+            district:
+              type: string
+            lat:
+              format: float
+              type: number
+            lon:
+              format: float
+              type: number
+            pincode:
+              type: integer
+            postOfficeName:
+              type: string
+            state:
+              type: string
+            taluka:
+              type: string
+          required:
+          - pincode
+          - taluka
+          - district
+          - state
+          - countryCode
+          - postOfficeName
+          - lon
+          - lat
+          type: object
+      required:
+      - location
+      - aqi
+      - components
+      - epochTime
+      - dt
+      - eventTime
+      type: object
+    V1CurrentWeather:
+      properties:
+        description:
+          type: string
+        dt:
+          type: integer
+        epochTime:
+          type: integer
+        eventTime:
+          format: date-time
+          type: string
+        location:
+          properties:
+            countryCode:
+              type: string
+            district:
+              type: string
+            lat:
+              format: float
+              type: number
+            lon:
+              format: float
+              type: number
+            pincode:
+              type: integer
+            postOfficeName:
+              type: string
+            state:
+              type: string
+            taluka:
+              type: string
+          required:
+          - pincode
+          - taluka
+          - district
+          - state
+          - countryCode
+          - postOfficeName
+          - lon
+          - lat
+          type: object
+        timezone:
+          type: integer
+        weather:
+          properties:
+            feels_like:
+              format: float
+              type: number
+            grnd_level:
+              type: integer
+            humidity:
+              type: integer
+            pressure:
+              type: integer
+            sea_level:
+              type: integer
+            temp:
+              format: float
+              type: number
+            temp_max:
+              format: float
+              type: number
+            temp_min:
+              format: float
+              type: number
+          required:
+          - temp
+          - feels_like
+          - temp_min
+          - temp_max
+          - pressure
+          - humidity
+          - sea_level
+          - grnd_level
+          type: object
+        weatherCode:
+          type: integer
+        wind:
+          properties:
+            deg:
+              type: integer
+            gust:
+              format: float
+              type: number
+            speed:
+              format: float
+              type: number
+          required:
+          - speed
+          - deg
+          - gust
+          type: object
+      required:
+      - location
+      - wind
+      - weather
+      - weatherCode
+      - description
+      - epochTime
+      - dt
+      - timezone
+      - eventTime
+      type: object
+    V1Error:
+      properties:
+        code:
+          format: int32
+          type: integer
+        message:
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    V1GeoLocation:
+      properties:
+        countryCode:
+          type: string
+        district:
+          type: string
+        lat:
+          format: float
+          type: number
+        lon:
+          format: float
+          type: number
+        pincode:
+          format: int32
+          type: integer
+        postOfficeName:
+          type: string
+        state:
+          type: string
+        taluka:
+          type: string
+      required:
+      - pincode
+      - taluka
+      - district
+      - state
+      - countryCode
+      - postOfficeName
+      - lon
+      - lat
+      type: object
+info:
+  contact:
+    email: amolpratap.singh@yahoo.com
+  description: "The API furnishes data concerning the current, historical, and forecasted\
+    \ weather \nand Air Quality conditions for various locations in India."
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Weather Watch API
+  version: 1.0.0
+openapi: 3.0.0
+paths:
+  /v1/currentAirQualityIndex:
+    get:
+      description: API used to get the list of Current Air Quality Index Information
+        for India
+      operationId: listCurrentAirQualityIndex
+      parameters:
+      - description: "If pincode query attribute provided, response will contain the\
+          \ AQI record \nfor that Geo Location."
+        in: query
+        name: pincode
+        required: false
+        schema:
+          type: string
+      - description: "If state query attribute provided, response will contain the\
+          \ AQI record \nfor that Geo Location."
+        in: query
+        name: state
+        required: false
+        schema:
+          type: string
+      - description: "If district query attribute provided, response will contain\
+          \ the AQI record \nfor that Geo Location."
+        in: query
+        name: district
+        required: false
+        schema:
+          type: string
+      - description: Pagination Reference Index
+        in: query
+        name: pageRef
+        required: false
+        schema:
+          type: string
+      - description: "It display the list from the startFrom value till th value provided\
+          \ in\nthe limit attribute. If limit is not provided it will provide till\
+          \ default \nvalue which is 100."
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 100
+          format: int32
+          type: integer
+      - description: 'The response order will be based on the value passed.
+
+          ascending(0) or descending(1)'
+        in: query
+        name: order
+        required: false
+        schema:
+          default: 1
+          format: int32
+          type: integer
+      - description: 'The response would be sorted based on one of the attribute passed.
+
+          Attributes are : eventTime, state or district.'
+        in: query
+        name: sortBy
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/V1AirQualityIndex'
+                type: array
+          description: List of Current Weather AQI Information.
+          headers:
+            x-next:
+              description: Link to the next page of response
+              schema:
+                type: string
+            x-total-count:
+              description: Total number of records found for request.
+              schema:
+                format: int32
+                type: integer
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Error'
+          description: Unexpected Error
+      summary: List the current air quality index of a location
+      tags:
+      - v1_aqi
+  /v1/currentWeather:
+    get:
+      description: API used to get the list of Current Weather Information for India
+      operationId: listCurrentWeather
+      parameters:
+      - description: "If pincode query attribute provided, response will contain the\
+          \ weather record \nfor that Geo Location."
+        in: query
+        name: pincode
+        required: false
+        schema:
+          type: string
+      - description: "If state query attribute provided, response will contain the\
+          \ weather record \nfor that Geo Location."
+        in: query
+        name: state
+        required: false
+        schema:
+          type: string
+      - description: "If district query attribute provided, response will contain\
+          \ the weather record \nfor that Geo Location."
+        in: query
+        name: district
+        required: false
+        schema:
+          type: string
+      - description: Pagination Reference Index
+        in: query
+        name: pageRef
+        required: false
+        schema:
+          type: string
+      - description: "It display the list from the startFrom value till th value provided\
+          \ in\nthe limit attribute. If limit is not provided it will provide till\
+          \ default \nvalue which is 100."
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 100
+          format: int32
+          type: integer
+      - description: 'The response order will be based on the value passed.
+
+          ascending(0) or descending(1)'
+        in: query
+        name: order
+        required: false
+        schema:
+          default: 1
+          format: int32
+          type: integer
+      - description: 'The response would be sorted based on one of the attribute passed.
+
+          Attributes are : eventTime, state or district.'
+        in: query
+        name: sortBy
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/V1CurrentWeather'
+                type: array
+          description: List of Current Weather Information.
+          headers:
+            x-next:
+              description: Link to the next page of response
+              schema:
+                type: string
+            x-total-count:
+              description: Total number of records found for request.
+              schema:
+                format: int32
+                type: integer
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Error'
+          description: Unexpected Error
+      summary: List the current weather
+      tags:
+      - v1_weather
+  /v1/geo-locations:
+    get:
+      description: "API used to get the list of Geo Location Information supported\
+        \ \nby Weather Watch application"
+      operationId: listGeoLocations
+      parameters:
+      - description: "If pincode query attribute provided, response will contain the\
+          \ record \nfor that Geo Location."
+        in: query
+        name: pincode
+        required: false
+        schema:
+          type: string
+      - description: "If state query attribute provided, response will contain the\
+          \ record \nfor that Geo Location."
+        in: query
+        name: state
+        required: false
+        schema:
+          type: string
+      - description: "If district query attribute provided, response will contain\
+          \ the record \nfor that Geo Location."
+        in: query
+        name: district
+        required: false
+        schema:
+          type: string
+      - description: "It display the list from the startFrom value till th value provided\
+          \ in\nthe limit attribute. If limit is not provided it will provide till\
+          \ default \nvalue which is 100."
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 100
+          format: int32
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/V1GeoLocation'
+                type: array
+          description: List of Geo Location.
+          headers:
+            x-next:
+              description: Link to the next page of response
+              schema:
+                type: string
+            x-total-count:
+              description: Total number of records found for request.
+              schema:
+                format: int32
+                type: integer
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Error'
+          description: Unexpected Error
+      summary: List all the Geo Location supported by Weather Watch application
+      tags:
+      - v1_geo_locations
+  /v1/historyWeather:
+    get:
+      description: API used to get the list of historical Weather Information for
+        India
+      operationId: listHistoryWeather
+      parameters:
+      - description: "If pincode query attribute provided, response will contain the\
+          \ weather record \nfor that Geo Location."
+        in: query
+        name: pincode
+        required: false
+        schema:
+          type: string
+      - description: "If state query attribute provided, response will contain the\
+          \ weather record \nfor that Geo Location."
+        in: query
+        name: state
+        required: false
+        schema:
+          type: string
+      - description: "If district query attribute provided, response will contain\
+          \ the weather record \nfor that Geo Location."
+        in: query
+        name: district
+        required: false
+        schema:
+          type: string
+      - description: 'Timestamp in epoch format. Filters the weather record that occurred
+          between
+
+          start time and end time, inclusive of end time.'
+        in: query
+        name: startTime
+        required: false
+        schema:
+          type: string
+      - description: 'Timestamp in epoch format. Filters the weather record that occurred
+          between
+
+          start time and end time, inclusive of end time.'
+        in: query
+        name: endTime
+        required: false
+        schema:
+          type: string
+      - description: Pagination Reference Index
+        in: query
+        name: pageRef
+        required: false
+        schema:
+          type: string
+      - description: "It display the list from the startFrom value till th value provided\
+          \ in\nthe limit attribute. If limit is not provided it will provide till\
+          \ default \nvalue which is 100."
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 100
+          format: int32
+          type: integer
+      - description: 'The response order will be based on the value passed.
+
+          ascending(0) or descending(1)'
+        in: query
+        name: order
+        required: false
+        schema:
+          default: 1
+          format: int32
+          type: integer
+      - description: 'The response would be sorted based on one of the attribute passed.
+
+          Attributes are : eventTime, state or district.'
+        in: query
+        name: sortBy
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/V1CurrentWeather'
+                type: array
+          description: List of historical Weather Information.
+          headers:
+            x-next:
+              description: Link to the next page of response
+              schema:
+                type: string
+            x-total-count:
+              description: Total number of records found for request.
+              schema:
+                format: int32
+                type: integer
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Error'
+          description: Unexpected Error
+      summary: List the historical weather Information
+      tags:
+      - v1_weather

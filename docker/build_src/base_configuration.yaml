@@ -1,5 +1,13 @@
 openapi: 3.0.0
 info:
-  title: Weather Watch
-  description: Weather Watch API
+  title: Weather Watch API
   version: 1.0.0
+  description: |-
+    The API furnishes data concerning the current, historical, and forecasted weather 
+    and Air Quality conditions for various locations in India.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: amolpratap.singh@yahoo.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
