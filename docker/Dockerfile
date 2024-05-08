@@ -8,24 +8,25 @@ ARG SWAGGER_CODEGEN_BUILD_REPO=/usr/local/codegen_build
 ARG API_SERVER_BUILD=/usr/local/api_server
 
 # Swagger Codegen Build Layer
-#FROM maven:3.8.1-jdk-11 as swagger_builder
+FROM maven:3.8.1-jdk-11 as swagger_builder
 
-#ARG SWAGGER_CODEGEN
-#ARG SWAGGER_PACKAGE
-#ARG SWAGGER_VERSION
-#ARG SWAGGER_CODEGEN_BUILD_REPO
+ARG SWAGGER_CODEGEN
+ARG SWAGGER_PACKAGE
+ARG SWAGGER_VERSION
+ARG SWAGGER_CODEGEN_BUILD_REPO
 
-#RUN mkdir -p ${SWAGGER_CODEGEN_BUILD_REPO}
-#WORKDIR ${SWAGGER_CODEGEN_BUILD_REPO}
+RUN mkdir -p ${SWAGGER_CODEGEN_BUILD_REPO}
+WORKDIR ${SWAGGER_CODEGEN_BUILD_REPO}
 
-#RUN wget -nv ${SWAGGER_CODEGEN}${SWAGGER_PACKAGE} \
-# && tar -xvzf ${SWAGGER_CODEGEN_BUILD_REPO}/${SWAGGER_PACKAGE}
+RUN wget -nv ${SWAGGER_CODEGEN}${SWAGGER_PACKAGE} \
+ && tar -xvzf ${SWAGGER_CODEGEN_BUILD_REPO}/${SWAGGER_PACKAGE}
 
-#WORKDIR ${SWAGGER_CODEGEN_BUILD_REPO}/${SWAGGER_VERSION}
+WORKDIR ${SWAGGER_CODEGEN_BUILD_REPO}/${SWAGGER_VERSION}
 
-#RUN mvn clean package
+RUN mvn clean package
 
 # Second Layer with swagger codegen controller generation
+# FROM ubuntu:20.04 as builder
 FROM ubuntu:latest as builder
 
 ARG API_SERVER_BUILD
@@ -36,16 +37,6 @@ ARG SWAGGER_CODEGEN_BUILD_REPO
 RUN apt-get update && \
  apt-get install -y openjdk-11-jdk && \
  apt-get clean;
-
-# Installation of Python 3.12
-#RUN apt-get update && \
-# apt-get install -y python3.12 && \
-# apt-get clean;
-
-# Install pip for Python 3
-#RUN apt-get update && \
-# apt-get install -y python3-pip && \
-# apt-get clean;
 
 # Set the default Java and Python versions
 #RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-11-openjdk-amd64/bin/java 1 && \
@@ -84,25 +75,10 @@ WORKDIR ${API_SERVER_BUILD}
 COPY build_src ${API_SERVER_BUILD}/build_src
 COPY weather-api-server-app/src/controllers ${API_SERVER_BUILD}/src/controllers
 COPY weather-api-spec ${API_SERVER_BUILD}/weather-api-spec
-#COPY --from=swagger_builder ${SWAGGER_CODEGEN_BUILD_REPO}/${SWAGGER_VERSION}/modules/swagger-codegen-cli/target/swagger-codegen-cli.jar swagger-codegen-cli.jar
+COPY --from=swagger_builder ${SWAGGER_CODEGEN_BUILD_REPO}/${SWAGGER_VERSION}/modules/swagger-codegen-cli/target/swagger-codegen-cli.jar swagger-codegen-cli.jar
 
 RUN /usr/bin/python3.11 build_src/build.py
 
+COPY app.py ${API_SERVER_BUILD}
 
-
-#FROM openjdk:11-jdk-slim as builder
-
-#ARG SWAGGER_VERSION
-#ARG SWAGGER_CODEGEN_BUILD_REPO
-
-#COPY --from=swagger_builder ${SWAGGER_CODEGEN_BUILD_REPO}/${SWAGGER_VERSION} /opt/swagger-codegen
-
-#WORKDIR /opt/swagger-codegen
-
-# Define entry point or default command if needed
-# ENTRYPOINT ["java", "-jar", "swagger-codegen-cli.jar"]
-
-# Clean up Maven and other unnecessary files if needed
-# RUN apt-get remove --purge -y maven \
-#     && apt-get clean \
-#     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+CMD ["python3","app.py"]
