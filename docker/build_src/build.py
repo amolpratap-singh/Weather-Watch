@@ -1,6 +1,6 @@
 import os
 import yaml
-
+import shutil
 
 api_spec_dir = os.getenv("API_SPEC_DIR", "weather-api-spec")
 build_src_dir = os.getenv("API_SERVER_BUILD_DIR", "build_src")
@@ -46,7 +46,7 @@ with open(out_spec_file, mode="w") as f:
     yaml.safe_dump(final_spec, f)
     
 # Generate models using swagger-codegen-cli
-os.system(f"java -jar swagger-codegen-cli.jar generate -i {out_spec_file} -l python-flask -o {target_dir}")
+#os.system(f"java -jar swagger-codegen-cli.jar generate -i {out_spec_file} -l python-flask -o {target_dir}")
 
 # Copy the Controllers
 dst_controllers_dir = os.path.join(target_dir, 'swagger_server', 'controllers')
@@ -54,5 +54,11 @@ print(f"dst_controllers_dir: {dst_controllers_dir} ")
 
 src_controllers_dir = os.path.join(api_ctrl_dir, 'controllers')
 print(f"src_controller_dir: {src_controllers_dir}")
+
+for file in os.listdir(src_controllers_dir):
+    print(file)
+
+for file in os.listdir(src_controllers_dir):
+    shutil.copy(os.path.join(src_controllers_dir, file), dst_controllers_dir)
 
 

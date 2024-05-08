@@ -263,19 +263,19 @@ components:
         components:
           type: object
           properties:
-            co:
+            Co:
               type: number
               format: float
-            no:
+            NitricOxide:
               type: number
               format: float
-            no2:
+            No2:
               type: number
               format: float
-            o3:
+            O3:
               type: number
               format: float
-            so2:
+            So2:
               type: number
               format: float
             pm2_5:
@@ -284,18 +284,18 @@ components:
             pm10:
               type: number
               format: float
-            nh3:
+            Nh3:
               type: number
               format: float
           required:
-            - co
-            - "no"
-            - no2
-            - o3
-            - so2
+            - Co
+            - NitricOxide
+            - No2
+            - O3
+            - So2
             - pm2_5
             - pm10
-            - nh3
+            - Nh3
         epochTime:
           type: integer
         dt:
