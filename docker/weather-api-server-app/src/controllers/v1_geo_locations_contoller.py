@@ -1,5 +1,7 @@
-import connexion
 import six
+import connexion
+
+from flask import jsonify, make_response
 
 from swagger_server.models.v1_error import V1Error  # noqa: E501
 from swagger_server.models.v1_geo_location import V1GeoLocation  # noqa: E501
@@ -22,4 +24,7 @@ def list_geo_locations(pincode=None, state=None, district=None, limit=None):  # 
 
     :rtype: List[V1GeoLocation]
     """
-    return 'do some magic!'
+    
+    response = make_response()
+    response.data = list()
+    return response, 200

@@ -1,5 +1,7 @@
-import connexion
 import six
+import connexion
+
+from flask import jsonify, make_response
 
 from swagger_server.models.v1_current_weather import V1CurrentWeather  # noqa: E501
 from swagger_server.models.v1_error import V1Error  # noqa: E501
@@ -22,7 +24,10 @@ def list_current_weather(pincode=None, state=None, district=None, limit=None):  
 
     :rtype: List[V1CurrentWeather]
     """
-    return 'do some magic!'
+    
+    response = make_response()
+    response.data = list()
+    return response, 200
 
 
 def list_history_weather(pincode=None, state=None, district=None, limit=None, start_time=None, end_time=None):  # noqa: E501
@@ -45,4 +50,7 @@ def list_history_weather(pincode=None, state=None, district=None, limit=None, st
 
     :rtype: List[V1CurrentWeather]
     """
-    return 'do some magic!'
+    
+    response = make_response()
+    response.data = list()
+    return response, 200
