@@ -90,4 +90,7 @@ from swagger_server.controllers import {import_file}
         with open(file_path, mode='w') as w:
             w.writelines(content)
 
-
+#for custom_file in ['encoder.py', 'wsgi.py']:
+#    src_file = os.path.join(src_controllers_dir, custom_file)
+#    print(src_file)
+#    dst_file = os.path.join(target_dir, 'swagger_server', custom_file)

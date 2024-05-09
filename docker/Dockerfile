@@ -81,8 +81,11 @@ RUN /usr/bin/python3.11 build_src/build.py
 
 RUN mv ${API_SERVER_BUILD}/build_src/src/swagger_server ${API_SERVER_BUILD}/swagger_server
 COPY weather-api-server-app/src/*.py ${API_SERVER_BUILD}/swagger_server
+COPY weather-api-server-app/src/utils ${API_SERVER_BUILD}/utils
 COPY app.py ${API_SERVER_BUILD}
 
 # CMD gunicorn swagger_server.wsgi:app uvicorn.workers.UvicornWorker
 
 CMD ["python3","app.py"]
+
+#CMD ["gunicorn", "swagger_server.wsgi:app", "--worker-class", "uvicorn.workers.UvicornWorker"]

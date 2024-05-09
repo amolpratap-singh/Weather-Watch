@@ -8,7 +8,7 @@ from swagger_server.models.v1_error import V1Error  # noqa: E501
 from swagger_server import util
 
 
-def list_current_weather(pincode=None, state=None, district=None, limit=None):  # noqa: E501
+def list_current_weather(pincode=None, state=None, district=None, limit=None, order=None):  # noqa: E501
     """List the current weather
 
     API used to get the list of Current Weather Information for India # noqa: E501
@@ -30,7 +30,7 @@ def list_current_weather(pincode=None, state=None, district=None, limit=None):  
     return response, 200
 
 
-def list_history_weather(pincode=None, state=None, district=None, limit=None, start_time=None, end_time=None):  # noqa: E501
+def list_history_weather(pincode=None, state=None, district=None, start_time=None, end_time=None, page_ref=None, limit=None, order=None, sort_by=None):  # noqa: E501
     """List the historical weather Information
 
     API used to get the list of historical Weather Information for India # noqa: E501
