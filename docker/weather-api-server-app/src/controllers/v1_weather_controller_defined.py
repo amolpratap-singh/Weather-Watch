@@ -8,7 +8,7 @@ from swagger_server.models.v1_error import V1Error  # noqa: E501
 from swagger_server import util
 
 
-def list_current_weather(pincode=None, state=None, district=None, limit=None, order=None):  # noqa: E501
+def list_current_weather(pincode=None, state=None, district=None, page_ref=None, limit=None, order=None, sort_by=None):  # noqa: E501
     """List the current weather
 
     API used to get the list of Current Weather Information for India # noqa: E501

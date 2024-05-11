@@ -75,7 +75,7 @@ WORKDIR ${API_SERVER_BUILD}
 COPY build_src ${API_SERVER_BUILD}/build_src
 COPY weather-api-server-app/src/controllers ${API_SERVER_BUILD}/src/controllers
 COPY weather-api-spec ${API_SERVER_BUILD}/weather-api-spec
-COPY --from=swagger_builder ${SWAGGER_CODEGEN_BUILD_REPO}/${SWAGGER_VERSION}/modules/swagger-codegen-cli/target/swagger-codegen-cli.jar swagger-codegen-cli.jar
+COPY --from=swagger_builder ${SWAGGER_CODEGEN_BUILD_REPO}/${SWAGGER_VERSION}/modules/swagger-codegen-cli/target/swagger-codegen-cli.jar build_src/swagger-codegen-cli.jar
 
 RUN /usr/bin/python3.11 build_src/build.py
 
@@ -84,8 +84,6 @@ COPY weather-api-server-app/src/*.py ${API_SERVER_BUILD}/swagger_server
 COPY weather-api-server-app/src/utils ${API_SERVER_BUILD}/utils
 COPY app.py ${API_SERVER_BUILD}
 
-# CMD gunicorn swagger_server.wsgi:app uvicorn.workers.UvicornWorker
+EXPOSE 8000
 
-CMD ["python3","app.py"]
-
-#CMD ["gunicorn", "swagger_server.wsgi:app", "--worker-class", "uvicorn.workers.UvicornWorker"]
+CMD ["gunicorn", "-b", "0.0.0.0:8000","swagger_server.wsgi:app", "--worker-class", "uvicorn.workers.UvicornWorker"]
