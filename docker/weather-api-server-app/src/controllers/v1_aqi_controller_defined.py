@@ -25,6 +25,17 @@ def list_current_air_quality_index(pincode=None, state=None, district=None, page
     :rtype: List[V1AirQualityIndex]
     """
     
+    es = None
+    limit = 10000 if limit > 10000 else limit
+    order = "desc" if order is None or order == 1 else "asc"
+    
+    # Opensearch Query buildup
+    data = {
+        "sort": [{sort_by: {"order": order}}],
+        "size": limit,
+        "_source": "source",
+    }
+    
     output ={
             "dt": 2,
             "components": {
