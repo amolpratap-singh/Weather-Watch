@@ -1,11 +1,16 @@
 import six
 import connexion
 import json
+import traceback
+
+from opensearch_db import opensearch_client as se
 from flask import jsonify, make_response
+from opensearchpy.exceptions import NotFoundError, RequestError, ConnectionError
 
 from swagger_server.models.v1_air_quality_index import V1AirQualityIndex  # noqa: E501
 from swagger_server.models.v1_error import V1Error  # noqa: E501
 from swagger_server import util
+from swagger_server import models
 
 
 def list_current_air_quality_index(pincode=None, state=None, district=None, page_ref=None, limit=None, order=None, sort_by=None):  # noqa: E501
@@ -25,44 +30,55 @@ def list_current_air_quality_index(pincode=None, state=None, district=None, page
     :rtype: List[V1AirQualityIndex]
     """
     
-    es = None
-    limit = 10000 if limit > 10000 else limit
-    order = "desc" if order is None or order == 1 else "asc"
-    
-    # Opensearch Query buildup
-    data = {
-        "sort": [{sort_by: {"order": order}}],
-        "size": limit,
-        "_source": "source",
-    }
-    
-    output ={
-            "dt": 2,
-            "components": {
-            "No2": 5.637377,
-            "O3": 2.302136,
-            "So2": 7.0614014,
-            "pm2_5": 3.6160767,
-            "Nh3": 1.4658129,
-            "pm10": 9.301444,
-            "NitricOxide": 5.962134,
-            "Co": 6.0274563
-            },
-            "aqi": 0,
-            "eventTime": "2000-01-23T04:56:07.000+00:00",
-            "location": {
-            "pincode": 1,
-            "countryCode": "countryCode",
-            "district": "district",
-            "taluka": "taluka",
-            "postOfficeName": "postOfficeName",
-            "lon": 1.2315135,
-            "state": "state",
-            "lat": 7.386282
-            },
-            "epochTime": 4
+    try:
+        es = None
+        limit = 10000 if limit > 10000 else limit
+        order = "desc" if order is None or order == 1 else "asc"
+        
+        if sort_by is not None and sort_by.lower() == "state":
+            sort_by = "location.state"
+        elif sort_by is not None and sort_by.lower() == "district":
+            sort_by = "location.district"
+        else:
+            sort_by = "epochTime"
+        
+        # Opensearch Query build up
+        data = {
+            "sort": [{sort_by: {"order": order}}],
+            "size": limit,
+            "_source": {"exclude": ["dt"]},
+            "query": {"bool": {"must": list(), "filter": list()}}
         }
+        
+        opensearch_client = se.get_opensearch_client()
+        resp = opensearch_client.search(index='current-aqi', body=data)
+        results = [r['_source'] for r in resp['hits']['hits']]
+    
+    except NotFoundError as err:
+        response = make_response()
+        response.content_type = 'application/json'
+        response.data = json.dumps({})
+        return response, 200
+    except RequestError as err:
+        ise = models.V1Error(400, f"could not retrieve the aqi data")
+        return jsonify(ise), 400
+    except ConnectionError as err:
+        ise = models.V1Error(503, f"Connection failed")
+        return jsonify(ise), 503
+    except Exception as err:
+        ise = models.V1Error(500, f"could not retrieve the aqi data")
+        return jsonify(ise), 500
+    finally:
+        try:
+            if es:
+                se.close_opensearch_client(es)
+        except Exception as err:
+            terr = traceback.format_exc()
+            print(terr)
     
     response = make_response()
-    response.data = json.dumps(output)
+    #response.headers = {'total_count': total_count, 'next': last_index}
+    response.content_type = 'application/json'
+    response.data = json.dumps(results)
+    
     return response, 200
