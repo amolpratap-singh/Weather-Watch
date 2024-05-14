@@ -12,7 +12,9 @@
 
 Weather-Watch is a application designed to provide access to users to retrieve weather data, air quality index (AQI) information, and weather forecast news. Built on Docker containers, it offers scalability and ease of deployment. Additionally, Weather-Watch features a Northbound API, allowing seamless consumption of data for various applications and services.
 
+<!-- Todo explain each microservice
 #### Component level description
+-->
 
 ### Architecture Diagram
 ---
@@ -22,17 +24,19 @@ Weather-Watch is a application designed to provide access to users to retrieve w
 ---
 * docker (used for creating container images, spwan docker container etc.)
 
-* API Key from[openweathermap](https://home.openweathermap.org/)
+* API Key from [openweathermap](https://home.openweathermap.org/)
 
 
 ### Usage
 ---
 
-#####
+<!--
+##### Todod provide how to bring up and use the curl command and provide a video documentation
 docker cli to make up
 
 ####
-curl command to utlize 
+curl command to utlize
+--> 
 
 #### Getting Current Weather Information
 
@@ -52,9 +56,11 @@ The app also provides Air Quality Index (AQI) information along with weather det
 ### API Endpoint
 ---
 
+<!-- API Endpoint with Params as well as post method jwt token to be implemented with user login -->
+
 | Method | Endpoint | Description |
 |:-------|:---------|:------------|
-| GET | /v1/currentWeather | List the current weather of India |
-| GET | /v1/historyWeather | List the historical weather data |
-| GET | /v1/currentAirQualityIndex | List the current AQI of India |
-| GET | /v1/historyAirQualityIndex | List the historical AQI data |
+| <code>GET</code> | <code>/v1/currentWeather</code> | List the current weather of India |
+| <code>GET</code> | <code>/v1/historyWeather</code> | List the historical weather data |
+| <code>GET</code> | <code>/v1/currentAirQualityIndex</code> | List the current AQI of India |
+| <code>GET</code> | <code>/v1/historyAirQualityIndex</code> | List the historical AQI data |
