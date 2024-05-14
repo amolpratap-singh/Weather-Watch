@@ -1,14 +1,38 @@
 ## Weather-Watch
 
+![GitHub all releases](https://img.shields.io/github/downloads/amolpratap-singh/Weather-Watch/total)
+![GitHub language count](https://img.shields.io/github/languages/count/amolpratap-singh/Weather-Watch)
+![GitHub top language](https://img.shields.io/github/languages/top/amolpratap-singh/Weather-Watch?color=green)
+![Bitbucket open issues](https://img.shields.io/bitbucket/issues/amolpratap-singh/Weather-Watch)
+![GitHub forks](https://img.shields.io/github/forks/amolpratap-singh/Weather-Watch?style=social)
+![GitHub Repo stars](https://img.shields.io/github/stars/amolpratap-singh/Weather-Watch?style=social)
+
 ### Overview
+---
 
 Weather-Watch is a application designed to provide access to users to retrieve weather data, air quality index (AQI) information, and weather forecast news. Built on Docker containers, it offers scalability and ease of deployment. Additionally, Weather-Watch features a Northbound API, allowing seamless consumption of data for various applications and services.
 
-### Architecture Diagram
+#### Component level description
 
+### Architecture Diagram
+---
 ![Architecture Diagram](docker/utils/Weather_Watch.jpg)
 
+### Prerequisites
+---
+* docker (used for creating container images, spwan docker container etc.)
+
+* API Key from[openweathermap](https://home.openweathermap.org/)
+
+
 ### Usage
+---
+
+#####
+docker cli to make up
+
+####
+curl command to utlize 
 
 #### Getting Current Weather Information
 
@@ -23,3 +47,14 @@ To get the current weather information for a specific location, follow these ste
 #### Viewing Air Quality Index (AQI)
 
 The app also provides Air Quality Index (AQI) information along with weather details. AQI measures the quality of air in a particular area and its potential effects on health.
+
+
+### API Endpoint
+---
+
+| Method | Endpoint | Description |
+|:-------|:---------|:------------|
+| GET | /v1/currentWeather | List the current weather of India |
+| GET | /v1/historyWeather | List the historical weather data |
+| GET | /v1/currentAirQualityIndex | List the current AQI of India |
+| GET | /v1/historyAirQualityIndex | List the historical AQI data |
