@@ -53,6 +53,7 @@ def list_current_air_quality_index(pincode=None, state=None, district=None, page
         opensearch_client = se.get_opensearch_client()
         resp = opensearch_client.search(index='current-aqi', body=data)
         results = [r['_source'] for r in resp['hits']['hits']]
+        total_count = resp['hits']['total']['value']
     
     except NotFoundError as err:
         response = make_response()
@@ -79,6 +80,6 @@ def list_current_air_quality_index(pincode=None, state=None, district=None, page
     response = make_response()
     #response.headers = {'total_count': total_count, 'next': last_index}
     response.content_type = 'application/json'
-    response.data = json.dumps(results)
+    response.data = json.dumps({'aqi': results, 'total': total_count})
     
     return response, 200

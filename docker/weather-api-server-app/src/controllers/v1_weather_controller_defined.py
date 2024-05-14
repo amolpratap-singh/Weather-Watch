@@ -1,11 +1,16 @@
 import six
 import connexion
+import json
+import traceback
 
+from opensearch_db import opensearch_client as se
 from flask import jsonify, make_response
+from opensearchpy.exceptions import NotFoundError, RequestError, ConnectionError
 
 from swagger_server.models.v1_current_weather import V1CurrentWeather  # noqa: E501
 from swagger_server.models.v1_error import V1Error  # noqa: E501
 from swagger_server import util
+from swagger_server import models
 
 
 def list_current_weather(pincode=None, state=None, district=None, page_ref=None, limit=None, order=None, sort_by=None):  # noqa: E501
@@ -25,8 +30,58 @@ def list_current_weather(pincode=None, state=None, district=None, page_ref=None,
     :rtype: List[V1CurrentWeather]
     """
     
+    try:
+        es = None
+        limit = 10000 if limit > 10000 else limit
+        order = "desc" if order is None or order == 1 else "asc"
+        
+        if sort_by is not None and sort_by.lower() == "state":
+            sort_by = "location.state"
+        elif sort_by is not None and sort_by.lower() == "district":
+            sort_by = "location.district"
+        else:
+            sort_by = "epochTime"
+        
+        # Opensearch Query build up
+        data = {
+            "sort": [{sort_by: {"order": order}}],
+            "size": limit,
+            "_source": {"exclude": ["dt"]},
+            "query": {"bool": {"must": list(), "filter": list()}}
+        }
+        
+        opensearch_client = se.get_opensearch_client()
+        resp = opensearch_client.search(index='current-weather', body=data)
+        results = [r['_source'] for r in resp['hits']['hits']]
+        total_count = resp['hits']['total']['value']
+    
+    except NotFoundError as err:
+        response = make_response()
+        response.content_type = 'application/json'
+        response.data = json.dumps({})
+        return response, 200
+    except RequestError as err:
+        ise = models.V1Error(400, f"could not retrieve the aqi data")
+        return jsonify(ise), 400
+    except ConnectionError as err:
+        ise = models.V1Error(503, f"Connection failed")
+        return jsonify(ise), 503
+    except Exception as err:
+        ise = models.V1Error(500, f"could not retrieve the aqi data")
+        return jsonify(ise), 500
+    finally:
+        try:
+            if es:
+                se.close_opensearch_client(es)
+        except Exception as err:
+            terr = traceback.format_exc()
+            print(terr)
+    
     response = make_response()
-    response.data = list()
+    #response.headers = {'total_count': total_count, 'next': last_index}
+    response.content_type = 'application/json'
+    response.data = json.dumps({'weather': results, 'total': total_count})
+    
     return response, 200
 
 
