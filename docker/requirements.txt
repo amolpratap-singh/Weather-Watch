@@ -2,4 +2,5 @@ Flask
 pyyaml
 connexion[flask,uvicorn]
 gunicorn
+urllib3
 opensearch-py

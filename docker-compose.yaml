@@ -22,32 +22,40 @@ services:
       - opensearch_data:/usr/share/opensearch/data
   #  networks:
   #    - internal
-  
-  #weather-main-app:
-  #  build: 
-  #    context: .
-  #    dockerfile: ./docker/weather-main-app/Dockerfile
-  #    args:
-  #      TAG: "0.0.1"
-  #  container_name: weather-main
-  #  ports:
-  #    - "8080:8080"
-  #  depends_on:
-  #    - opensearch
-  #  environment:
-  #    - OPENSEARCH_HOST=opensearch
-  #    - OPENSEARCH_PORT=9200
-  #  networks:
-  #    - internal
 
-  #weather_api_server:
-  #  build: .
-  #  ports:
-  #    - "8080:8080"
-  #  volumes:
-  #    - ./app:/app
+  api_server:
+    image: weather-api-server:latest
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: api-server
+    ports:
+      - "8000:8000"
+    depends_on:
+      - opensearch
+    environment:
+      - OPENSEARCH_HOST=opensearch
+      - OPENSEARCH_PORT=9200
+
 #networks:
 #  internal: {}
+
+  #weather-main-app:
+    #  build: 
+    #    context: .
+    #    dockerfile: ./docker/weather-main-app/Dockerfile
+    #    args:
+    #      TAG: "0.0.1"
+    #  container_name: weather-main
+    #  ports:
+    #    - "8080:8080"
+    #  depends_on:
+    #    - opensearch
+    #  environment:
+    #    - OPENSEARCH_HOST=opensearch
+    #    - OPENSEARCH_PORT=9200
+    #  networks:
+    #    - internal
 
 volumes:
   opensearch_data:
