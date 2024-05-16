@@ -13,8 +13,15 @@ from swagger_server.models.v1_error import V1Error  # noqa: E501
 from swagger_server import util
 from swagger_server import models
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Logging Configuration
+log_level = os.getenv("LOG_LEVEL", "INFO")
+logger = logging.getLogger("Weather Controller")
+format = logging.Formatter("%(asctime)s %(levelname)s %(module)s %(funcName)s %(message)s")
+handler = logging.StreamHandler()
+handler.setFormatter(format)
+logger.addHandler(handler)
+logger.setLevel(log_level)
+logger.propagate = False
 
 def list_current_weather(pincode=None, state=None, district=None, page_ref=None, limit=None, order=None, sort_by=None):  # noqa: E501
     """List the current weather
@@ -59,18 +66,22 @@ def list_current_weather(pincode=None, state=None, district=None, page_ref=None,
         total_count = resp['hits']['total']['value']
     
     except NotFoundError as err:
+        logger.error(f"Weather Data not found error :{err}")
         response = make_response()
         response.content_type = 'application/json'
         response.data = json.dumps({})
         return response, 200
     except RequestError as err:
-        ise = models.V1Error(400, f"could not retrieve the aqi data")
+        logger.error(f"Request error :{err}")
+        ise = models.V1Error(400, "could not retrieve the aqi data")
         return jsonify(ise), 400
     except ConnectionError as err:
-        ise = models.V1Error(503, f"Connection failed")
+        logger.error(f"Connection Failed :{err}")
+        ise = models.V1Error(503, "Connection failed")
         return jsonify(ise), 503
     except Exception as err:
-        ise = models.V1Error(500, f"could not retrieve the aqi data")
+        logger.error(f"Exception cause in current weather data: {err}")
+        ise = models.V1Error(500, "could not retrieve the aqi data")
         return jsonify(ise), 500
     finally:
         try:
@@ -78,7 +89,7 @@ def list_current_weather(pincode=None, state=None, district=None, page_ref=None,
                 se.close_opensearch_client(es)
         except Exception as err:
             terr = traceback.format_exc()
-            print(terr)
+            logger.error(f"Exception cause while closing opensearch :{err} and traceback: {terr}")
     
     response = make_response()
     #response.headers = {'total_count': total_count, 'next': last_index}

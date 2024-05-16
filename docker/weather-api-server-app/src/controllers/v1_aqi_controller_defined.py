@@ -16,7 +16,7 @@ from swagger_server import models
 
 # Logging Configuration
 log_level = os.getenv("LOG_LEVEL", "INFO")
-logger = logging.getLogger("WeatherApp")
+logger = logging.getLogger("AQI Controller")
 format = logging.Formatter("%(asctime)s %(levelname)s %(module)s %(funcName)s %(message)s")
 handler = logging.StreamHandler()
 handler.setFormatter(format)
@@ -65,7 +65,6 @@ def list_current_air_quality_index(pincode=None, state=None, district=None, page
         resp = opensearch_client.search(index='current-aqi', body=data)
         results = [r['_source'] for r in resp['hits']['hits']]
         total_count = resp['hits']['total']['value']
-        logger.info(f"total count is {total_count}")
     
     except NotFoundError as err:
         logger.error(f"AQI Data not found error :{err}")
@@ -91,7 +90,7 @@ def list_current_air_quality_index(pincode=None, state=None, district=None, page
                 se.close_opensearch_client(es)
         except Exception as err:
             terr = traceback.format_exc()
-            logger.error(f"Exception cause while closing opensearch with :{err} and traceback: {terr}")
+            logger.error(f"Exception cause while closing opensearch :{err} and traceback: {terr}")
     
     response = make_response()
     #response.headers = {'total_count': total_count, 'next': last_index}
