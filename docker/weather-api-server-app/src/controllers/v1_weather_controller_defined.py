@@ -1,6 +1,7 @@
 import six
-import connexion
 import json
+import logging
+import connexion
 import traceback
 
 from opensearch_db import opensearch_client as se
@@ -12,6 +13,8 @@ from swagger_server.models.v1_error import V1Error  # noqa: E501
 from swagger_server import util
 from swagger_server import models
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def list_current_weather(pincode=None, state=None, district=None, page_ref=None, limit=None, order=None, sort_by=None):  # noqa: E501
     """List the current weather

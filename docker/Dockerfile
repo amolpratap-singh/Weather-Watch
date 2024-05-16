@@ -83,11 +83,12 @@ RUN mv ${API_SERVER_BUILD}/build_src/src/swagger_server ${API_SERVER_BUILD}/swag
 COPY docker/weather-api-server-app/src/*.py ${API_SERVER_BUILD}/swagger_server
 COPY docker/weather-api-server-app/src/utils ${API_SERVER_BUILD}/utils
 COPY docker/weather-api-server-app/src/opensearch_db ${API_SERVER_BUILD}/opensearch_db
-
+COPY docker/app.py ${API_SERVER_BUILD}
 EXPOSE 8000
 
 RUN apt-get update && \
     apt-get install -y telnet curl && \
     apt-get clean
 
-CMD ["gunicorn", "-b", "0.0.0.0:8000","swagger_server.wsgi:app", "--worker-class", "uvicorn.workers.UvicornWorker"]
+CMD ["python3.11", "app.py"]
+#CMD ["gunicorn", "-b", "0.0.0.0:8000","swagger_server.wsgi:app", "--worker-class", "uvicorn.workers.UvicornWorker"]

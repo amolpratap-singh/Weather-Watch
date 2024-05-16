@@ -1,6 +1,8 @@
+import os
 import six
-import connexion
 import json
+import logging
+import connexion
 import traceback
 
 from opensearch_db import opensearch_client as se
@@ -12,6 +14,15 @@ from swagger_server.models.v1_error import V1Error  # noqa: E501
 from swagger_server import util
 from swagger_server import models
 
+# Logging Configuration
+log_level = os.getenv("LOG_LEVEL", "INFO")
+logger = logging.getLogger("WeatherApp")
+format = logging.Formatter("%(asctime)s %(levelname)s %(module)s %(funcName)s %(message)s")
+handler = logging.StreamHandler()
+handler.setFormatter(format)
+logger.addHandler(handler)
+logger.setLevel(log_level)
+logger.propagate = False
 
 def list_current_air_quality_index(pincode=None, state=None, district=None, page_ref=None, limit=None, order=None, sort_by=None):  # noqa: E501
     """List the current air quality index of a location
@@ -54,20 +65,25 @@ def list_current_air_quality_index(pincode=None, state=None, district=None, page
         resp = opensearch_client.search(index='current-aqi', body=data)
         results = [r['_source'] for r in resp['hits']['hits']]
         total_count = resp['hits']['total']['value']
+        logger.info(f"total count is {total_count}")
     
     except NotFoundError as err:
+        logger.error(f"AQI Data not found error :{err}")
         response = make_response()
         response.content_type = 'application/json'
         response.data = json.dumps({})
         return response, 200
     except RequestError as err:
-        ise = models.V1Error(400, f"could not retrieve the aqi data")
+        logger.error(f"Request error :{err}")
+        ise = models.V1Error(400, "could not retrieve the aqi data")
         return jsonify(ise), 400
     except ConnectionError as err:
-        ise = models.V1Error(503, f"Connection failed")
+        logger.error(f"Connection Failed :{err}")
+        ise = models.V1Error(503, "Connection failed")
         return jsonify(ise), 503
     except Exception as err:
-        ise = models.V1Error(500, f"could not retrieve the aqi data")
+        logger.error(f"Exception cause in current aqi data: {err}")
+        ise = models.V1Error(500, "could not retrieve the aqi data")
         return jsonify(ise), 500
     finally:
         try:
@@ -75,7 +91,7 @@ def list_current_air_quality_index(pincode=None, state=None, district=None, page
                 se.close_opensearch_client(es)
         except Exception as err:
             terr = traceback.format_exc()
-            print(terr)
+            logger.error(f"Exception cause while closing opensearch with :{err} and traceback: {terr}")
     
     response = make_response()
     #response.headers = {'total_count': total_count, 'next': last_index}
