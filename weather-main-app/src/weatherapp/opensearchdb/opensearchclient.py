@@ -6,13 +6,9 @@ import urllib3
 from opensearchpy import OpenSearch
 from opensearchpy.exceptions import NotFoundError
 
-#OPENSEARCH_HOST = os.getenv("OPENSEARCH_HOST","localhost")
-#OPENSEARCH_PORT = int(os.getenv("OPENSEARCH_PORT",9200))
+OPENSEARCH_HOST = os.getenv("OPENSEARCH_HOST","localhost")
+OPENSEARCH_PORT = int(os.getenv("OPENSEARCH_PORT",9200))
 
-OPENSEARCH_HOST = "localhost"
-OPENSEARCH_PORT = 9200
-
-#AUTH = ('admin', 'admin')
 AUTH = ('admin', 'weatherTest@123')
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

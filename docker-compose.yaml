@@ -20,8 +20,6 @@ services:
       - "9200:9200"
     volumes:
       - opensearch_data:/usr/share/opensearch/data
-  #  networks:
-  #    - internal
 
   api_server:
     image: weather-api-server:latest
@@ -36,9 +34,6 @@ services:
     environment:
       - OPENSEARCH_HOST=opensearch
       - OPENSEARCH_PORT=9200
-
-#networks:
-#  internal: {}
 
   #weather-main-app:
     #  build: 
