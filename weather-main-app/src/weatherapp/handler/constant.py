@@ -2,7 +2,6 @@
 HOST_URL = "http://api.openweathermap.org/geo/1.0/zip"
 HOST_WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather"
 HOST_AQI_URL = "http://api.openweathermap.org/data/2.5/air_pollution"
-API_KEY = "cfab3b3ad777d414f6a5ee4d4750d629"
 
 # common constant keys
 EPOCH_TIME = "epochTime"

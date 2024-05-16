@@ -1,3 +1,4 @@
+import os
 import time
 import logging
 import requests
@@ -5,11 +6,11 @@ import requests
 from datetime import datetime
 from threading import Thread
 
-from src.weatherapp.handler import constant
-from src.weatherapp.utils.retry import retry_on_exception
-from src.weatherapp.utils.schedule_jobs import schedule_interval
-from src.weatherapp.opensearchdb.opensearchclient import OpenSearchDB
-from src.weatherapp.handler.geo_location import GeoLocation
+from weatherapp.handler import constant
+from weatherapp.utils.retry import retry_on_exception
+from weatherapp.utils.schedule_jobs import schedule_interval
+from weatherapp.opensearchdb.opensearchclient import OpenSearchDB
+from weatherapp.handler.geo_location import GeoLocation
 
 class AirQualityIndex(Thread):
     
@@ -19,7 +20,7 @@ class AirQualityIndex(Thread):
         self.thread_name = thread_name
         self.thread_id = thread_id
         self.host_aqi_url = constant.HOST_AQI_URL
-        self.api_key = constant.API_KEY
+        self.api_key = os.getenv("WEATHER_API_KEY")
         self.history_aqi_index_name = "history-aqi" + "." + datetime.today().strftime("%Y-%m-%d-%H")
         self.opensearchdb = OpenSearchDB()
         self.geo_loc = GeoLocation()
@@ -27,11 +28,10 @@ class AirQualityIndex(Thread):
     
     def run(self):
         self.logger.info(f"AQI thread started {self.thread_id} and {self.thread_name}")
-        self.logger.info(f"AQI Jobs been trigger for every {12} Hours")
+        self.logger.info("AQI Jobs been trigger for every 24 Hours")
         self._start()
     
-    # TODO Change into 4 hour for scheduling now based on seconds
-    @schedule_interval(30)
+    @schedule_interval(int(os.getenv("SCHEDULER_INTERVAL", 86400)))
     def _start(self):
         self.logger.info("Update of AQI Data in DB triggered")
         for pincode in range(len(self.pincode_list)):

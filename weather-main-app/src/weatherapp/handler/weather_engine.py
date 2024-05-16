@@ -1,9 +1,9 @@
 import logging
 
-from src.weatherapp.handler.air_quality import AirQualityIndex
-from src.weatherapp.handler.weather_data import WeatherData
-from src.weatherapp.handler.forecast_news import ForeCastNews
-from src.weatherapp.handler.geo_location import GeoLocation
+from weatherapp.handler.air_quality import AirQualityIndex
+from weatherapp.handler.weather_data import WeatherData
+from weatherapp.handler.forecast_news import ForeCastNews
+from weatherapp.handler.geo_location import GeoLocation
 
 class WeatherEngine(object):
     

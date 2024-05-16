@@ -34,23 +34,25 @@ services:
     environment:
       - OPENSEARCH_HOST=opensearch
       - OPENSEARCH_PORT=9200
+      - OPENSEARCH_AUTH_USERNAME=admin
+      - OPENSEARCH_AUTH_PASSWORD=weatherTest@123
 
-  #weather-main-app:
-    #  build: 
-    #    context: .
-    #    dockerfile: ./docker/weather-main-app/Dockerfile
-    #    args:
-    #      TAG: "0.0.1"
-    #  container_name: weather-main
-    #  ports:
-    #    - "8080:8080"
-    #  depends_on:
-    #    - opensearch
-    #  environment:
-    #    - OPENSEARCH_HOST=opensearch
-    #    - OPENSEARCH_PORT=9200
-    #  networks:
-    #    - internal
+  main-app:
+    image: main-app-server:latest
+    build:
+      context: .
+      dockerfile: ./weather-main-app/Dockerfile
+    container_name: main-app-server
+    depends_on:
+      - opensearch
+    environment:
+      - OPENSEARCH_HOST=opensearch
+      - OPENSEARCH_PORT=9200
+      - LOG_LEVEL=INFO
+      - OPENSEARCH_AUTH_USERNAME=admin
+      - OPENSEARCH_AUTH_PASSWORD=weatherTest@123
+      - WEATHER_API_KEY="cfab3b3ad777d414f6a5ee4d4750d629"
+      - SCHEDULER_INTERVAL=180 #Interval in seconds (24h=86400)
 
 volumes:
   opensearch_data:

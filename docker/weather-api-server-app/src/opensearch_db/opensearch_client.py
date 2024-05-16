@@ -4,8 +4,7 @@ from opensearchpy import OpenSearch
 
 OPENSEARCH_HOST = os.getenv("OPENSEARCH_HOST","localhost")
 OPENSEARCH_PORT = int(os.getenv("OPENSEARCH_PORT",9200))
-
-AUTH = ('admin', 'weatherTest@123')
+AUTH = (f'{os.getenv("OPENSEARCH_AUTH_USERNAME")}', f'{os.getenv("OPENSEARCH_AUTH_PASSWORD")}')
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

@@ -1,7 +1,7 @@
 import os
 import logging
 
-from src.weatherapp.handler.weather_engine import WeatherEngine
+from weatherapp.handler.weather_engine import WeatherEngine
 
 # Logging Configuration
 log_level = os.getenv("LOG_LEVEL", "INFO")

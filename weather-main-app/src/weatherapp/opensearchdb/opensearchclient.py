@@ -8,8 +8,7 @@ from opensearchpy.exceptions import NotFoundError
 
 OPENSEARCH_HOST = os.getenv("OPENSEARCH_HOST","localhost")
 OPENSEARCH_PORT = int(os.getenv("OPENSEARCH_PORT",9200))
-
-AUTH = ('admin', 'weatherTest@123')
+AUTH = (f'{os.getenv("OPENSEARCH_AUTH_USERNAME")}', f'{os.getenv("OPENSEARCH_AUTH_PASSWORD")}')
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -17,9 +16,11 @@ class OpenSearchDB(object):
     
     def __init__(self):
         self.logger = logging.getLogger("WeatherApp")
-        self.es = OpenSearch(hosts=[{"hosts": OPENSEARCH_HOST, "port": OPENSEARCH_PORT}],
-                             http_auth=AUTH, use_ssl=True, verify_certs=False, 
-                             ssl_assert_hostname = False, ssl_show_warn = False)
+        self.es = OpenSearch([f"https://{OPENSEARCH_HOST}:{OPENSEARCH_PORT}"], 
+                             http_auth=AUTH, verify_certs=False)
+        #self.es = OpenSearch(hosts=[{"hosts": OPENSEARCH_HOST, "port": OPENSEARCH_PORT}],
+        #                     http_auth=AUTH, use_ssl=True, verify_certs=False, 
+        #                     ssl_assert_hostname = False, ssl_show_warn = False)
     
     def read_doc(self, index_name, doc_id):
         try:
