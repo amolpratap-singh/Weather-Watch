@@ -32,6 +32,7 @@ services:
     depends_on:
       - opensearch
     environment:
+      - LOG_LEVEL=INFO
       - OPENSEARCH_HOST=opensearch
       - OPENSEARCH_PORT=9200
       - OPENSEARCH_AUTH_USERNAME=admin
@@ -46,13 +47,13 @@ services:
     depends_on:
       - opensearch
     environment:
+      - LOG_LEVEL=INFO
       - OPENSEARCH_HOST=opensearch
       - OPENSEARCH_PORT=9200
-      - LOG_LEVEL=INFO
       - OPENSEARCH_AUTH_USERNAME=admin
       - OPENSEARCH_AUTH_PASSWORD=weatherTest@123
       - WEATHER_API_KEY=cfab3b3ad777d414f6a5ee4d4750d629
-      - SCHEDULER_INTERVAL=180 #Interval in seconds (24h=86400)
+      - SCHEDULER_INTERVAL=86400 #Interval in seconds (24h=86400)
 
 volumes:
   opensearch_data:

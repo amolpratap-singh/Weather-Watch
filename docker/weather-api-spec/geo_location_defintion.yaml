@@ -58,6 +58,24 @@ paths:
             type: integer
             format: int32
             default: 100
+        - name: order
+          in: query
+          description: |-
+            The response order will be based on the value passed.
+            ascending(0) or descending(1)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: sort_by
+          in: query
+          description: |-
+            The response would be sorted based on one of the attribute passed.
+            Attributes are : state or district.
+          required: false
+          schema:
+            type: string
       responses:
         "200":
             description: List of Geo Location.

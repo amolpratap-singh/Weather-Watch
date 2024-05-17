@@ -45,7 +45,7 @@ paths:
           required: false
           schema:
             type: string
-        - name: pageRef
+        - name: page_ref
           in: query
           description: Pagination Reference Index
           required: false
@@ -72,11 +72,12 @@ paths:
             type: integer
             format: int32
             default: 1
-        - name: sortBy
+        - name: sort_by
           in: query
           description: |-
             The response would be sorted based on one of the attribute passed.
             Attributes are : eventTime, state or district.
+          required: false
           schema:
             type: string
       responses:

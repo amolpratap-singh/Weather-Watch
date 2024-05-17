@@ -1,3 +1,4 @@
+import os
 import six
 import json
 import logging
@@ -41,7 +42,7 @@ def list_current_weather(pincode=None, state=None, district=None, page_ref=None,
     """
     
     try:
-        es = None
+        opensearch_client = None
         limit = 10000 if limit > 10000 else limit
         order = "desc" if order is None or order == 1 else "asc"
         
@@ -85,8 +86,8 @@ def list_current_weather(pincode=None, state=None, district=None, page_ref=None,
         return jsonify(ise), 500
     finally:
         try:
-            if es:
-                se.close_opensearch_client(es)
+            if opensearch_client:
+                se.close_opensearch_client(opensearch_client)
         except Exception as err:
             terr = traceback.format_exc()
             logger.error(f"Exception cause while closing opensearch :{err} and traceback: {terr}")
