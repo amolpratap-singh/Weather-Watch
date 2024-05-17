@@ -48,11 +48,11 @@ def list_geo_locations(pincode=None, state=None, district=None, limit=None, orde
         order = "desc" if order is None or order == 1 else "asc"
         
         if sort_by is not None and sort_by.lower() == "state":
-            sort_by = "state.keyword"
+            sort_by = "state"
         elif sort_by is not None and sort_by.lower() == "district":
-            sort_by = "district.keyword"
+            sort_by = "district"
         else:
-            sort_by = "pincode.keyword"
+            sort_by = "pincode"
         
         # Opensearch Query build up
         data = {
