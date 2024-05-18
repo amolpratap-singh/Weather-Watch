@@ -61,7 +61,7 @@ RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
     rm get-pip.py
 
 # Install any Python packages using pip3
-COPY docker/requirements.txt /tmp
+COPY api-server/requirements.txt /tmp
 RUN python3.11 -m pip install --no-cache-dir -r /tmp/requirements.txt
 
 # Set environment variables
@@ -72,18 +72,18 @@ RUN mkdir -p ${API_SERVER_BUILD}
 
 WORKDIR ${API_SERVER_BUILD}
 
-COPY docker/build_src ${API_SERVER_BUILD}/build_src
-COPY docker/weather-api-server-app/src/controllers ${API_SERVER_BUILD}/src/controllers
-COPY docker/weather-api-spec ${API_SERVER_BUILD}/weather-api-spec
+COPY api-server/build_src ${API_SERVER_BUILD}/build_src
+COPY api-server/weather-api-server-app/src/controllers ${API_SERVER_BUILD}/src/controllers
+COPY api-server/weather-api-spec ${API_SERVER_BUILD}/weather-api-spec
 COPY --from=swagger_builder ${SWAGGER_CODEGEN_BUILD_REPO}/${SWAGGER_VERSION}/modules/swagger-codegen-cli/target/swagger-codegen-cli.jar build_src/swagger-codegen-cli.jar
 
 RUN /usr/bin/python3.11 build_src/build.py
 
 RUN mv ${API_SERVER_BUILD}/build_src/src/swagger_server ${API_SERVER_BUILD}/swagger_server
-COPY docker/weather-api-server-app/src/*.py ${API_SERVER_BUILD}/swagger_server
-COPY docker/weather-api-server-app/src/utils ${API_SERVER_BUILD}/utils
-COPY docker/weather-api-server-app/src/opensearch_db ${API_SERVER_BUILD}/opensearch_db
-COPY docker/app.py ${API_SERVER_BUILD}
+COPY api-server/weather-api-server-app/src/*.py ${API_SERVER_BUILD}/swagger_server
+COPY api-server/weather-api-server-app/src/utils ${API_SERVER_BUILD}/utils
+COPY api-server/weather-api-server-app/src/opensearch_db ${API_SERVER_BUILD}/opensearch_db
+COPY api-server/app.py ${API_SERVER_BUILD}
 EXPOSE 8000
 
 RUN apt-get update && \

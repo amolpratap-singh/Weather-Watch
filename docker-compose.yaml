@@ -21,23 +21,6 @@ services:
     volumes:
       - opensearch_data:/usr/share/opensearch/data
 
-  api_server:
-    image: weather-api-server:latest
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
-    container_name: api-server
-    ports:
-      - "8000:8000"
-    depends_on:
-      - opensearch
-    environment:
-      - LOG_LEVEL=INFO
-      - OPENSEARCH_HOST=opensearch
-      - OPENSEARCH_PORT=9200
-      - OPENSEARCH_AUTH_USERNAME=admin
-      - OPENSEARCH_AUTH_PASSWORD=weatherTest@123
-
   main-app:
     image: main-app-server:latest
     build:
@@ -54,6 +37,23 @@ services:
       - OPENSEARCH_AUTH_PASSWORD=weatherTest@123
       - WEATHER_API_KEY=cfab3b3ad777d414f6a5ee4d4750d629
       - SCHEDULER_INTERVAL=86400 #Interval in seconds (24h=86400)
+
+  api_server:
+    image: weather-api-server:latest
+    build:
+      context: .
+      dockerfile: api-server/Dockerfile
+    container_name: api-server
+    ports:
+      - "8000:8000"
+    depends_on:
+      - opensearch
+    environment:
+      - LOG_LEVEL=INFO
+      - OPENSEARCH_HOST=opensearch
+      - OPENSEARCH_PORT=9200
+      - OPENSEARCH_AUTH_USERNAME=admin
+      - OPENSEARCH_AUTH_PASSWORD=weatherTest@123
 
 volumes:
   opensearch_data:

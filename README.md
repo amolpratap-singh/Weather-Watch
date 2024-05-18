@@ -18,7 +18,7 @@ Weather-Watch is a application designed to provide access to users to retrieve w
 
 ### Architecture Diagram
 ---
-![Architecture Diagram](docker/utils/Weather_Watch.jpg)
+![Architecture Diagram](resources/Weather_Watch.jpg)
 
 ### Prerequisites
 ---
