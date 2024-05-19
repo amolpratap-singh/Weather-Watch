@@ -61,6 +61,18 @@ def list_geo_locations(pincode=None, state=None, district=None, limit=None, orde
             "query": {"bool": {"must": list(), "filter": list()}}
         }
         
+        if (pincode is None and state is None and district is None):
+            data["query"]["bool"]["must"].append({"match_all": {}})
+        
+        if pincode:
+            data["query"]["bool"]["must"].append({'match': {"pincode": pincode}})
+        
+        if state:
+            data["query"]["bool"]["must"].append({'match': {"state": state}})
+            
+        if district:
+            data["query"]["bool"]["must"].append({'match': {"district": district}})
+        
         opensearch_client = se.get_opensearch_client()
         resp = opensearch_client.search(index='geo-location', body=data)
         results = [r['_source'] for r in resp['hits']['hits']]
