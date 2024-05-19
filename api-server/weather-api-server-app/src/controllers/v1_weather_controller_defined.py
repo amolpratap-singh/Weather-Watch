@@ -61,6 +61,18 @@ def list_current_weather(pincode=None, state=None, district=None, page_ref=None,
             "query": {"bool": {"must": list(), "filter": list()}}
         }
         
+        if (pincode is None and state is None and district is None):
+            data["query"]["bool"]["must"].append({"match_all": {}})
+        
+        if pincode:
+            data["query"]["bool"]["must"].append({'match': {"location.pincode": pincode}})
+        
+        if state:
+            data["query"]["bool"]["must"].append({'match': {"location.state": state}})
+            
+        if district:
+            data["query"]["bool"]["must"].append({'match': {"location.district": district}})
+        
         opensearch_client = se.get_opensearch_client()
         resp = opensearch_client.search(index='current-weather', body=data)
         results = [r['_source'] for r in resp['hits']['hits']]
