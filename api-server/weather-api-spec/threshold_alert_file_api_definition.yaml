@@ -1,0 +1,217 @@
+openapi: "3.0.0"
+info:
+  title: OMC Threshold Alarms and Record Rule
+  description: |
+    API for managing Threshold Alarms and Record Rule files with operations like GET, GET list, PUT, POST, and DELETE.
+  version: 2.0.0
+paths:
+  /v1/thresholdAlarmsRuleFiles:
+    get:
+      summary: List of threshold alarms rule files
+      description: This API is used to get list of all threshold alarms and record rule files provided by the user.
+      operationId: listRuleFiles
+      tags:
+        - v1_threshold_alarms_rule_files
+      responses:
+        200:
+          description: List of threshold alarms rule files
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/V1Error'
+    post:
+      summary: Upload threshold alarms rule file
+      description: |
+        This API is used to upload the threshold alarms or record rule file in yaml format. The filename must match the pattern '^(?!\s)([^<>:;,?"*|/\\\s]{1,31})$'.
+        Note: Ensure the threshold alarms or record rule file conforms to the V1alarmRule schema.
+      operationId: uploadRuleFile
+      tags:
+        - v1_threshold_alarms_rule_files
+      requestBody:
+        content:
+          application/x-yml:
+            schema:
+              $ref: '#/components/schemas/V1alarmRule'
+        required: true
+      parameters:
+        - name: fileName
+          in: query
+          required: true
+          schema:
+            type: string
+            pattern: '^(?!\s)([^<>:;,?"*|/\\\s]{1,31})$'
+      responses:
+        201:
+          description: File uploaded successfully
+        400:
+          description: Invalid file type provided
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/V1Error"
+  /v1/thresholdAlarmsRuleFiles/{fileName}:
+    get:
+      summary: Get Threshold alarm or record rule file content
+      operationId: getRuleFile
+      tags:
+        - v1_threshold_alarms_rule_files
+      parameters:
+        - in: path
+          name: fileName
+          required: true
+          schema:
+            type: string
+            pattern: '^(?!\s)([^<>:;,?"*|/\\\s]{1,31})$'
+      responses:
+        200:
+          description: Threshold alarm rule file content
+          content:
+            application/x-yml:
+              schema:
+                type: string
+                format: binary
+        400:
+          description: Invalid file name provided
+        404:
+          description: Threshold alarm rule file not found
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/V1Error"
+    put:
+      summary: Update threshold alarms rule file
+      description: This API is used to update the threshold alarms rule file for existing file.
+      operationId: updateRuleFile
+      tags:
+        - v1_threshold_alarms_rule_files
+      parameters:
+        - in: path
+          name: fileName
+          required: true
+          schema:
+            type: string
+            pattern: '^(?!\s)([^<>:;,?"*|/\\\s]{1,31})$'
+      requestBody:
+        content:
+          application/x-yml:
+            schema:
+              $ref: '#/components/schemas/V1alarmRule'
+        required: true
+      responses:
+        201:
+          description: File updated successfully
+        400:
+          description: Invalid file name provided
+        404:
+          description: Threshold alarm rule file not found
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/V1Error"
+    delete:
+      summary: Delete threshold alarms rule file
+      description: This API is used to delete the threshold alarms rule file provided.
+      operationId: deleteRuleFile
+      tags:
+        - v1_threshold_alarms_rule_files
+      parameters:
+        - in: path
+          name: fileName
+          required: true
+          schema:
+            type: string
+            pattern: '^(?!\s)([^<>:;,?"*|/\\\s]{1,31})$'
+      responses:
+        200:
+          description: Threshold alarms rule file deleted successfully
+        400:
+          description: Invalid file name provided
+        404:
+          description: Threshold alarms rule file not found
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/V1Error"
+components:
+  schemas:
+    AlertRule:
+      type: object
+      properties:
+        alert:
+          type: string
+        expr:
+          type: string
+        for:
+          type: string
+        labels:
+          type: object
+        annotations:
+          type: object
+      required:
+        - alert
+        - expr
+    RecordRule:
+      type: object
+      properties:
+        record:
+          type: string
+        expr:
+          type: string
+      required:
+        - record
+        - expr
+    Rule:
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/AlertRule'
+        - $ref: '#/components/schemas/RecordRule'
+    Group:
+      type: object
+      properties:
+        name:
+          type: string
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/Rule'
+      required:
+        - name
+        - rules
+    V1alarmRule:
+      type: object
+      properties:
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+      required:
+        - groups
+    V1Error:
+      type: object
+      properties:
+        code:
+          format: int32
+          type: integer
+        message:
+          type: string
+      required:
+        - code
+        - message

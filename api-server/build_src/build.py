@@ -7,6 +7,9 @@ api_spec_dir = os.getenv("API_SPEC_DIR", "weather-api-spec")
 build_src_dir = os.getenv("API_SERVER_BUILD_DIR", "build_src")
 api_ctrl_dir = os.getenv("API_SERVER_DIR", "src")
 
+# Uncomment for development purpose
+#api_ctrl_dir = os.getenv("API_SERVER_DIR", "weather-api-server-app/src/")
+
 target_dir = os.path.join(build_src_dir, "src")
 base_config_file = os.path.join(build_src_dir, "base_configuration.yaml")
 
@@ -72,20 +75,20 @@ for file in os.listdir(dst_controllers_dir):
 from utils import gen_utils
 from swagger_server.controllers import {import_file}
 """)
-        func_name = ''
-        for func in content:
-            if func.startswith('def '):
-                func_name = func.split('(')[0].split()[1]
-            if func.__contains__('.is_josn:'):
-                index = content.index(func)
-                content[index] = func.replace('.is_json:', '.mimetype == "application/json":')
-            if func.__contains__('.get_json()'):
-                index = content.index(func)
-                content[index] = func.replace('body = ', 'pass # body = ')
-            if func.__contains__("return 'do some magic!'"):
-                return_func = func.replace("return 'do some magic!'",
-                                           f"return gen_utils.call_function({import_file}.{func_name}, inspect.currentframe().f_locals)")
-                index = content.index(func)
+        function_name = ''
+        for each in content:
+            if each.startswith('def '):
+                function_name = each.split('(')[0].split()[1]
+            if each.__contains__('.is_json:'):
+                index = content.index(each)
+                content[index] = each.replace('.is_json:', '.mimetype == "application/json":')
+            if each.__contains__('.get_json()'):
+                index = content.index(each)
+                content[index] = each.replace('body = ', 'pass # body = ')
+            if each.__contains__("return 'do some magic!'"):
+                return_func = each.replace("return 'do some magic!'",
+                                           f"return gen_utils.call_function({import_file}.{function_name}, inspect.currentframe().f_locals)")
+                index = content.index(each)
                 content[index] = return_func
         with open(file_path, mode='w') as w:
             w.writelines(content)

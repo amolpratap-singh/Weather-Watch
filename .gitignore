@@ -1,3 +1,4 @@
 .vscode
 weather-watch-venv/
 project_resources/
+.DS_Store
