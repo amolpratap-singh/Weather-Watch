@@ -3,8 +3,6 @@ import logging
 
 from functools import wraps
 
-from weatherapp.Exception.exceptions import EmptyListError
-
 logger = logging.getLogger("WeatherApp")
 
 def retry_on_exception(exception, max_retry=3,

@@ -1,0 +1,11 @@
+# Weather-Watch Threshold Configuration
+# Modify these values to adjust the alert thresholds
+
+aqi:
+  # AQI levels: 1=Good, 2=Fair, 3=Moderate, 4=Poor, 5=Very Poor
+  alert_level: 4 # Generate alert when AQI >= this level
+
+temperature:
+  # Temperature thresholds in Celsius
+  high_alert: 40 # Alert when temperature >= this value
+  low_alert: 5 # Alert when temperature <= this value

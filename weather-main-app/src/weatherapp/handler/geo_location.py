@@ -5,7 +5,7 @@ import requests
 
 from weatherapp.handler import constant
 from weatherapp.utils.retry import retry_on_exception
-from weatherapp.Exception.exceptions import EmptyListError
+from weatherapp.error.exceptions import EmptyListError
 from weatherapp.opensearchdb.opensearchclient import OpenSearchDB
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
