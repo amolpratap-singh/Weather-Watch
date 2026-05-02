@@ -1,0 +1,33 @@
+# Git
+.git
+.gitignore
+
+# Python artifacts
+__pycache__
+*.py[cod]
+*.egg-info
+.pytest_cache
+
+# Virtual environment
+venv
+.venv
+
+# IDE
+.vscode
+.idea
+
+# OS files
+.DS_Store
+Thumbs.db
+._*
+
+# Documentation / non-runtime
+README.md
+LICENSE
+docs/
+*.md
+resources/
+frontend/
+
+# Large files not needed in build
+project_resources/

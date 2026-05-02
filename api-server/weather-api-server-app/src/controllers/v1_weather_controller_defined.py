@@ -43,7 +43,7 @@ def list_current_weather(pincode=None, state=None, district=None, page_ref=None,
     
     try:
         opensearch_client = None
-        limit = 10000 if limit > 10000 else limit
+        limit = limit if limit and limit <= 10000 else 10000
         order = "desc" if order is None or order == 1 else "asc"
         
         if sort_by is not None and sort_by.lower() == "state":
@@ -86,7 +86,7 @@ def list_current_weather(pincode=None, state=None, district=None, page_ref=None,
         return response, 200
     except RequestError as err:
         logger.error(f"Request error :{err}")
-        ise = models.V1Error(400, "could not retrieve the aqi data")
+        ise = models.V1Error(400, "could not retrieve the weather data")
         return jsonify(ise), 400
     except ConnectionError as err:
         logger.error(f"Connection Failed :{err}")
@@ -94,7 +94,7 @@ def list_current_weather(pincode=None, state=None, district=None, page_ref=None,
         return jsonify(ise), 503
     except Exception as err:
         logger.error(f"Exception cause in current weather data: {err}")
-        ise = models.V1Error(500, "could not retrieve the aqi data")
+        ise = models.V1Error(500, "could not retrieve the weather data")
         return jsonify(ise), 500
     finally:
         try:

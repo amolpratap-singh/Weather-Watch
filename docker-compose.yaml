@@ -35,7 +35,7 @@ services:
       - OPENSEARCH_PORT=9200
       - OPENSEARCH_AUTH_USERNAME=admin
       - OPENSEARCH_AUTH_PASSWORD=weatherTest@123
-      - WEATHER_API_KEY=cfab3b3ad777d414f6a5ee4d4750d629
+      - WEATHER_API_KEY=your_openweathermap_api_key_here
       - SCHEDULER_INTERVAL=86400 #Interval in seconds (24h=86400)
 
   api_server:

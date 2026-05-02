@@ -63,7 +63,7 @@ class GeoLocation(object):
                 pincode_list.append(var.get("pincode"))
         try:
             if not pincode_list:
-                raise ValueError(f"pincode list is empty {len(pincode_list)}")
+                raise EmptyListError(f"pincode list is empty {len(pincode_list)}")
         except EmptyListError as ex:
             self.logger.error(f"pincode list is empty {ex}")
         self.logger.info(f"List of Pincode present for geo-location: {pincode_list}")
@@ -71,11 +71,14 @@ class GeoLocation(object):
     
     def update_lat_lon_db(self):
         pincode_list = self.get_pincode_list()
-        for pincode in range(len(pincode_list)):
-            key = str(str(pincode_list[pincode]) + "_" + constant.COUNTRY_CODE)
+        # for pincode in range(len(pincode_list)):
+        #     key = str(str(pincode_list[pincode]) + "_" + constant.COUNTRY_CODE)
+        for pincode in pincode_list:
+            key = str(str(pincode) + "_" + constant.COUNTRY_CODE)
             result = self.opensearchdb.read_doc(index_name="geo-location", doc_id=key)
             if constant.LATITUDE not in result.keys() and constant.LONGITUDE not in result.keys():
-                self._set_lat_lon_db(pincode_list[pincode])
+                # self._set_lat_lon_db(pincode_list[pincode])
+                self._set_lat_lon_db(pincode)
     
     @retry_on_exception(Exception, wait_time=1, delay=2)
     def _set_lat_lon_db(self, pincode):
@@ -98,14 +101,14 @@ class GeoLocation(object):
                 self.logger.info(f"Receive status code as {response.status_code}")
         except requests.exceptions.HTTPError as http_err:
             self.logger.error(f"http error while connecting {self.host_url} with err: {http_err}")
-            raise http_err(f"http error while connecting {self.host_url} with err: {http_err}")
+            raise
         except requests.exceptions.ConnectionError as conn_err:
             self.logger.error(f"Error while connecting {self.host_url} with err: {conn_err}")
-            raise conn_err(f"Error while connecting {self.host_url} with err: {conn_err}")
+            raise
         except requests.exceptions.Timeout as time_out_err:
             self.logger.error(f"Time out error occur while connecting {self.host_url} with err: {time_out_err}")
-            raise time_out_err(f"Time out error occur while connecting {self.host_url} with err: {time_out_err}")
+            raise
         except Exception as ex:
             self.logger.error(f"Error occured while connecting {self.host_url} with {ex}")
-            raise ex(f"Error occured while connecting {self.host_url} with {ex}")
+            raise
         

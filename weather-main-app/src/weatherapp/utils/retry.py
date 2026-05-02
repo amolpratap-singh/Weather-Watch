@@ -13,10 +13,12 @@ def retry_on_exception(exception, max_retry=3,
         @wraps(func)
         def wrapper(*args, **kwargs):
             _retry, _delay = 0, wait_time
+            last_exception = None
             while _retry < max_retry:
                 try:
                     return func(*args, **kwargs)
                 except exception as e:
+                    last_exception = e
                     _retry += 1
                     if _retry == max_retry:
                         logger.error(f"{func.__name__} failed after {_retry} attempts")
@@ -24,5 +26,6 @@ def retry_on_exception(exception, max_retry=3,
                         logger.error(f"Retrying {func.__name__} due to {type(e)} retrying in {_delay} seconds")
                 time.sleep(_delay)
                 _delay *= delay
+            raise last_exception
         return wrapper
     return retry_exception

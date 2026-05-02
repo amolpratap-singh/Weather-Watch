@@ -1,6 +1,6 @@
 openapi: "3.0.0"
 info:
-  title: OMC Threshold Alarms and Record Rule
+  title: Threshold Alarms and Record Rule
   description: |
     API for managing Threshold Alarms and Record Rule files with operations like GET, GET list, PUT, POST, and DELETE.
   version: 2.0.0

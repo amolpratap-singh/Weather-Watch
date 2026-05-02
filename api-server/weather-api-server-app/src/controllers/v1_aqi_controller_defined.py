@@ -43,7 +43,7 @@ def list_current_air_quality_index(pincode=None, state=None, district=None, page
     
     try:
         opensearch_client = None
-        limit = 10000 if limit > 10000 else limit
+        limit = limit if limit and limit <= 10000 else 10000
         order = "desc" if order is None or order == 1 else "asc"
         
         if sort_by is not None and sort_by.lower() == "state":

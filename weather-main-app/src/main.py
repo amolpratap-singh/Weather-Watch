@@ -15,7 +15,7 @@ logger.setLevel(log_level)
 logger.propagate = False
 
 
-process_interval = os.getenv("PROCESS_INTRVAL", 30)
+process_interval = os.getenv("PROCESS_INTERVAL", 30)
 
 weather_engine = WeatherEngine()
 

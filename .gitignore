@@ -1,4 +1,39 @@
-.vscode
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+dist/
+build/
+*.whl
+
+# Virtual environments
 weather-watch-venv/
-project_resources/
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
 .DS_Store
+._.DS_Store
+Thumbs.db
+._*
+
+# Test / Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Project resources (large files, not needed in repo)
+project_resources/
+project_resources/swagger-codegen-cli.jar
+
+# Environment / Secrets
+.env
