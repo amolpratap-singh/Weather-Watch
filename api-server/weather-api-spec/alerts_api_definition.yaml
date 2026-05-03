@@ -1,0 +1,121 @@
+openapi: "3.0.0"
+info:
+  title: Weather Watch Alerts API
+  description: API for querying threshold violation alerts.
+  version: 1.0.0
+paths:
+  /v1/alerts:
+    get:
+      summary: List threshold alerts
+      description: Returns threshold violation alerts with optional filtering by severity, alert type, and status.
+      operationId: listAlerts
+      tags:
+        - v1_alerts
+      parameters:
+        - name: severity
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [critical, warning]
+          description: Filter by alert severity.
+        - name: alertType
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [temperature_high, temperature_low, aqi_high]
+          description: Filter by alert type.
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [active, resolved]
+          description: Filter by alert status.
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 100
+            maximum: 10000
+          description: Maximum number of results.
+        - name: order
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+            default: 1
+          description: Sort order. 1 = descending (newest first), 0 = ascending.
+      responses:
+        200:
+          description: List of alerts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  alerts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/V1Alert'
+                  total:
+                    type: integer
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/V1Error'
+components:
+  schemas:
+    V1Alert:
+      type: object
+      properties:
+        alertType:
+          type: string
+          description: Type of alert (temperature_high, temperature_low, aqi_high)
+        severity:
+          type: string
+          description: Alert severity (critical, warning)
+        status:
+          type: string
+          description: Alert status (active, resolved)
+        message:
+          type: string
+        location:
+          type: object
+          properties:
+            pincode:
+              type: integer
+            district:
+              type: string
+            state:
+              type: string
+        currentValue:
+          type: number
+        threshold:
+          type: number
+        epochTime:
+          type: integer
+        eventTime:
+          type: string
+        acknowledged:
+          type: boolean
+        resolvedTime:
+          type: string
+        resolvedEpoch:
+          type: integer
+    V1Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      required:
+        - code
+        - message

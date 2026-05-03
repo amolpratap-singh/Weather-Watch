@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Watch - India Weather Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+
+        /* Header */
+        .header { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155; }
+        .header h1 { font-size: 1.5rem; color: #38bdf8; }
+        .header h1 span { color: #f59e0b; }
+        .header .status { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #94a3b8; }
+        .header .status .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
+        .header .status .dot.error { background: #ef4444; }
+
+        /* Config Bar */
+        .config-bar { background: #1e293b; padding: 0.75rem 2rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; border-bottom: 1px solid #334155; }
+        .config-bar label { font-size: 0.8rem; color: #94a3b8; }
+        .config-bar input { background: #0f172a; border: 1px solid #475569; color: #e2e8f0; padding: 0.4rem 0.6rem; border-radius: 4px; font-size: 0.85rem; width: 200px; }
+        .config-bar button { background: #2563eb; color: white; border: none; padding: 0.4rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+        .config-bar button:hover { background: #1d4ed8; }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 0; background: #1e293b; border-bottom: 2px solid #334155; padding: 0 2rem; }
+        .tab { padding: 0.75rem 1.5rem; cursor: pointer; color: #94a3b8; font-size: 0.9rem; border-bottom: 2px solid transparent; transition: all 0.2s; }
+        .tab:hover { color: #e2e8f0; }
+        .tab.active { color: #38bdf8; border-bottom-color: #38bdf8; }
+
+        /* Main Content */
+        .content { padding: 1.5rem 2rem; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Stats Cards */
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card { background: #1e293b; border-radius: 8px; padding: 1.2rem; border: 1px solid #334155; }
+        .stat-card .label { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
+        .stat-card .value { font-size: 1.8rem; font-weight: 700; margin-top: 0.3rem; }
+        .stat-card .sub { font-size: 0.75rem; color: #64748b; margin-top: 0.2rem; }
+
+        /* Filter Bar */
+        .filter-bar { display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
+        .filter-bar select, .filter-bar input { background: #1e293b; border: 1px solid #475569; color: #e2e8f0; padding: 0.4rem 0.6rem; border-radius: 4px; font-size: 0.85rem; }
+        .filter-bar button { background: #2563eb; color: white; border: none; padding: 0.4rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+
+        /* Table */
+        .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid #334155; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #1e293b; padding: 0.75rem 1rem; text-align: left; font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; position: sticky; top: 0; }
+        td { padding: 0.65rem 1rem; border-top: 1px solid #1e293b; font-size: 0.85rem; }
+        tr:hover { background: #1e293b; }
+
+        /* AQI Badge */
+        .aqi-badge { padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
+        .aqi-1 { background: #166534; color: #bbf7d0; }
+        .aqi-2 { background: #854d0e; color: #fef08a; }
+        .aqi-3 { background: #9a3412; color: #fed7aa; }
+        .aqi-4 { background: #991b1b; color: #fecaca; }
+        .aqi-5 { background: #7f1d1d; color: #fca5a5; }
+
+        /* Severity Badge */
+        .severity-badge { padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+        .severity-critical { background: #991b1b; color: #fecaca; }
+        .severity-warning { background: #854d0e; color: #fef08a; }
+
+        /* Temp color */
+        .temp-hot { color: #ef4444; }
+        .temp-warm { color: #f59e0b; }
+        .temp-normal { color: #22c55e; }
+        .temp-cold { color: #38bdf8; }
+        .temp-freezing { color: #818cf8; }
+
+        /* Loading */
+        .loading { text-align: center; padding: 3rem; color: #64748b; }
+        .spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid #334155; border-top-color: #38bdf8; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Empty state */
+        .empty { text-align: center; padding: 3rem; color: #64748b; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .content { padding: 1rem; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌤️ Weather <span>Watch</span></h1>
+        <div class="status">
+            <div class="dot" id="statusDot"></div>
+            <span id="statusText">Connecting...</span>
+        </div>
+    </div>
+
+    <div class="config-bar">
+        <label>API Server:</label>
+        <input type="text" id="apiUrl" value="http://localhost:8000" placeholder="http://localhost:8000">
+        <button onclick="connectAndLoad()">Connect</button>
+        <button onclick="refreshAll()">↻ Refresh</button>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="weather">🌡️ Weather</div>
+        <div class="tab" data-tab="aqi">💨 Air Quality</div>
+        <div class="tab" data-tab="alerts">🔔 Alerts</div>
+        <div class="tab" data-tab="locations">📍 Locations</div>
+    </div>
+
+    <div class="content">
+        <!-- Weather Tab -->
+        <div class="tab-content active" id="tab-weather">
+            <div class="stats" id="weatherStats"></div>
+            <div class="filter-bar">
+                <select id="weatherState"><option value="">All States</option></select>
+                <input type="text" id="weatherPincode" placeholder="Pincode">
+                <button onclick="loadWeather()">Filter</button>
+            </div>
+            <div class="table-wrap"><table id="weatherTable">
+                <thead><tr><th>Location</th><th>State</th><th>Temp (°C)</th><th>Feels Like</th><th>Humidity</th><th>Wind</th><th>Description</th><th>Updated</th></tr></thead>
+                <tbody id="weatherBody"><tr><td colspan="8" class="loading"><div class="spinner"></div></td></tr></tbody>
+            </table></div>
+        </div>
+
+        <!-- AQI Tab -->
+        <div class="tab-content" id="tab-aqi">
+            <div class="stats" id="aqiStats"></div>
+            <div class="filter-bar">
+                <select id="aqiState"><option value="">All States</option></select>
+                <input type="text" id="aqiPincode" placeholder="Pincode">
+                <button onclick="loadAqi()">Filter</button>
+            </div>
+            <div class="table-wrap"><table id="aqiTable">
+                <thead><tr><th>Location</th><th>State</th><th>AQI</th><th>CO</th><th>NO₂</th><th>O₃</th><th>SO₂</th><th>PM2.5</th><th>PM10</th><th>Updated</th></tr></thead>
+                <tbody id="aqiBody"><tr><td colspan="10" class="loading"><div class="spinner"></div></td></tr></tbody>
+            </table></div>
+        </div>
+
+        <!-- Alerts Tab -->
+        <div class="tab-content" id="tab-alerts">
+            <div class="stats" id="alertStats"></div>
+            <div class="filter-bar">
+                <select id="alertSeverity"><option value="">All Severities</option><option value="critical">Critical</option><option value="warning">Warning</option></select>
+                <select id="alertType"><option value="">All Types</option><option value="temperature_high">Temp High</option><option value="temperature_low">Temp Low</option><option value="aqi_high">AQI High</option></select>
+                <button onclick="loadAlerts()">Filter</button>
+            </div>
+            <div class="table-wrap"><table id="alertsTable">
+                <thead><tr><th>Type</th><th>Severity</th><th>Message</th><th>Value</th><th>Threshold</th><th>Location</th><th>Time</th></tr></thead>
+                <tbody id="alertsBody"><tr><td colspan="7" class="empty">No alerts data available</td></tr></tbody>
+            </table></div>
+        </div>
+
+        <!-- Locations Tab -->
+        <div class="tab-content" id="tab-locations">
+            <div class="stats" id="locationStats"></div>
+            <div class="table-wrap"><table id="locationsTable">
+                <thead><tr><th>Pincode</th><th>District</th><th>State</th><th>Taluka</th><th>Post Office</th><th>Lat</th><th>Lon</th></tr></thead>
+                <tbody id="locationsBody"><tr><td colspan="7" class="loading"><div class="spinner"></div></td></tr></tbody>
+            </table></div>
+        </div>
+    </div>
+
+<script>
+let API_BASE = 'http://localhost:8000';
+
+// Tab switching
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    });
+});
+
+function setStatus(ok, msg) {
+    const dot = document.getElementById('statusDot');
+    const text = document.getElementById('statusText');
+    dot.className = ok ? 'dot' : 'dot error';
+    text.textContent = msg;
+}
+
+async function apiFetch(path, params = {}) {
+    const url = new URL(API_BASE + path);
+    Object.entries(params).forEach(([k, v]) => { if (v) url.searchParams.set(k, v); });
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    return resp.json();
+}
+
+function tempClass(t) {
+    if (t >= 42) return 'temp-hot';
+    if (t >= 30) return 'temp-warm';
+    if (t >= 15) return 'temp-normal';
+    if (t >= 5) return 'temp-cold';
+    return 'temp-freezing';
+}
+
+function aqiBadge(level) {
+    const labels = {1:'Good',2:'Fair',3:'Moderate',4:'Poor',5:'Very Poor'};
+    return `<span class="aqi-badge aqi-${level}">${level} - ${labels[level]||'N/A'}</span>`;
+}
+
+// Weather
+async function loadWeather() {
+    const body = document.getElementById('weatherBody');
+    body.innerHTML = '<tr><td colspan="8" class="loading"><div class="spinner"></div></td></tr>';
+    try {
+        const state = document.getElementById('weatherState').value;
+        const pincode = document.getElementById('weatherPincode').value;
+        const data = await apiFetch('/v1/currentWeather', {state, pincode, limit: 500});
+        const items = data.weather || [];
+
+        // Stats
+        const temps = items.map(i => i.weather?.temp).filter(t => t != null);
+        const avgTemp = temps.length ? (temps.reduce((a,b)=>a+b,0)/temps.length).toFixed(1) : 'N/A';
+        const maxTemp = temps.length ? Math.max(...temps).toFixed(1) : 'N/A';
+        const minTemp = temps.length ? Math.min(...temps).toFixed(1) : 'N/A';
+        document.getElementById('weatherStats').innerHTML = `
+            <div class="stat-card"><div class="label">Total Records</div><div class="value">${data.total||0}</div></div>
+            <div class="stat-card"><div class="label">Avg Temperature</div><div class="value ${tempClass(avgTemp)}">${avgTemp}°C</div></div>
+            <div class="stat-card"><div class="label">Max Temperature</div><div class="value ${tempClass(maxTemp)}">${maxTemp}°C</div></div>
+            <div class="stat-card"><div class="label">Min Temperature</div><div class="value ${tempClass(minTemp)}">${minTemp}°C</div></div>
+        `;
+
+        // Populate state filter
+        const states = [...new Set(items.map(i => i.location?.state).filter(Boolean))].sort();
+        const sel = document.getElementById('weatherState');
+        const cur = sel.value;
+        sel.innerHTML = '<option value="">All States</option>' + states.map(s => `<option value="${s}" ${s===cur?'selected':''}>${s}</option>`).join('');
+
+        if (!items.length) { body.innerHTML = '<tr><td colspan="8" class="empty">No weather data available</td></tr>'; return; }
+        body.innerHTML = items.map(i => {
+            const loc = i.location || {};
+            const w = i.weather || {};
+            const wind = i.wind || {};
+            const temp = w.temp != null ? w.temp : 'N/A';
+            return `<tr>
+                <td>${loc.district||'N/A'}</td><td>${loc.state||'N/A'}</td>
+                <td class="${tempClass(temp)}">${temp}°C</td>
+                <td>${w.feels_like!=null?w.feels_like+'°C':'N/A'}</td>
+                <td>${w.humidity!=null?w.humidity+'%':'N/A'}</td>
+                <td>${wind.speed!=null?wind.speed+' m/s':'N/A'}</td>
+                <td>${i.description||'N/A'}</td>
+                <td>${i.eventTime||'N/A'}</td>
+            </tr>`;
+        }).join('');
+        setStatus(true, 'Connected');
+    } catch(e) { body.innerHTML = `<tr><td colspan="8" class="empty">Error: ${e.message}</td></tr>`; setStatus(false, 'Error'); }
+}
+
+// AQI
+async function loadAqi() {
+    const body = document.getElementById('aqiBody');
+    body.innerHTML = '<tr><td colspan="10" class="loading"><div class="spinner"></div></td></tr>';
+    try {
+        const state = document.getElementById('aqiState').value;
+        const pincode = document.getElementById('aqiPincode').value;
+        const data = await apiFetch('/v1/currentAirQualityIndex', {state, pincode, limit: 500});
+        const items = data.aqi || [];
+
+        const aqiVals = items.map(i => i.aqi).filter(a => a != null);
+        const counts = {1:0,2:0,3:0,4:0,5:0};
+        aqiVals.forEach(a => { if(counts[a]!==undefined) counts[a]++; });
+        document.getElementById('aqiStats').innerHTML = `
+            <div class="stat-card"><div class="label">Total Records</div><div class="value">${data.total||0}</div></div>
+            <div class="stat-card"><div class="label">Good (1)</div><div class="value" style="color:#22c55e">${counts[1]}</div></div>
+            <div class="stat-card"><div class="label">Poor (4)</div><div class="value" style="color:#ef4444">${counts[4]}</div></div>
+            <div class="stat-card"><div class="label">Very Poor (5)</div><div class="value" style="color:#7f1d1d">${counts[5]}</div></div>
+        `;
+
+        const states = [...new Set(items.map(i => i.location?.state).filter(Boolean))].sort();
+        const sel = document.getElementById('aqiState');
+        const cur = sel.value;
+        sel.innerHTML = '<option value="">All States</option>' + states.map(s => `<option value="${s}" ${s===cur?'selected':''}>${s}</option>`).join('');
+
+        if (!items.length) { body.innerHTML = '<tr><td colspan="10" class="empty">No AQI data available</td></tr>'; return; }
+        body.innerHTML = items.map(i => {
+            const loc = i.location || {};
+            const c = i.components || {};
+            return `<tr>
+                <td>${loc.district||'N/A'}</td><td>${loc.state||'N/A'}</td>
+                <td>${aqiBadge(i.aqi)}</td>
+                <td>${c.co!=null?c.co.toFixed(1):'N/A'}</td>
+                <td>${c.no2!=null?c.no2.toFixed(1):'N/A'}</td>
+                <td>${c.o3!=null?c.o3.toFixed(1):'N/A'}</td>
+                <td>${c.so2!=null?c.so2.toFixed(1):'N/A'}</td>
+                <td>${c.pm2_5!=null?c.pm2_5.toFixed(1):'N/A'}</td>
+                <td>${c.pm10!=null?c.pm10.toFixed(1):'N/A'}</td>
+                <td>${i.eventTime||'N/A'}</td>
+            </tr>`;
+        }).join('');
+        setStatus(true, 'Connected');
+    } catch(e) { body.innerHTML = `<tr><td colspan="10" class="empty">Error: ${e.message}</td></tr>`; setStatus(false, 'Error'); }
+}
+
+// Alerts
+async function loadAlerts() {
+    const body = document.getElementById('alertsBody');
+    body.innerHTML = '<tr><td colspan="7" class="loading"><div class="spinner"></div></td></tr>';
+    try {
+        const severity = document.getElementById('alertSeverity').value;
+        const alertType = document.getElementById('alertType').value;
+        const data = await apiFetch('/v1/alerts', {severity, alert_type: alertType, limit: 200});
+        const items = data.alerts || [];
+
+        const critical = items.filter(i => i.severity === 'critical').length;
+        const warning = items.filter(i => i.severity === 'warning').length;
+        document.getElementById('alertStats').innerHTML = `
+            <div class="stat-card"><div class="label">Total Alerts</div><div class="value">${data.total||0}</div></div>
+            <div class="stat-card"><div class="label">Critical</div><div class="value" style="color:#ef4444">${critical}</div></div>
+            <div class="stat-card"><div class="label">Warning</div><div class="value" style="color:#f59e0b">${warning}</div></div>
+        `;
+
+        if (!items.length) { body.innerHTML = '<tr><td colspan="7" class="empty">No alerts — all clear! ✅</td></tr>'; return; }
+        body.innerHTML = items.map(i => {
+            const loc = i.location || {};
+            return `<tr>
+                <td>${i.alertType||'N/A'}</td>
+                <td><span class="severity-badge severity-${i.severity}">${i.severity}</span></td>
+                <td>${i.message||'N/A'}</td>
+                <td>${i.currentValue!=null?i.currentValue:'N/A'}</td>
+                <td>${i.threshold!=null?i.threshold:'N/A'}</td>
+                <td>${loc.district||'N/A'}, ${loc.state||'N/A'}</td>
+                <td>${i.eventTime||'N/A'}</td>
+            </tr>`;
+        }).join('');
+    } catch(e) { body.innerHTML = `<tr><td colspan="7" class="empty">No alerts data available</td></tr>`; }
+}
+
+// Locations
+async function loadLocations() {
+    const body = document.getElementById('locationsBody');
+    body.innerHTML = '<tr><td colspan="7" class="loading"><div class="spinner"></div></td></tr>';
+    try {
+        const data = await apiFetch('/v1/geo-locations', {limit: 1000});
+        const items = data.locations || [];
+
+        const states = [...new Set(items.map(i => i.state).filter(Boolean))];
+        document.getElementById('locationStats').innerHTML = `
+            <div class="stat-card"><div class="label">Total Locations</div><div class="value">${data.total||0}</div></div>
+            <div class="stat-card"><div class="label">States Covered</div><div class="value">${states.length}</div></div>
+        `;
+
+        if (!items.length) { body.innerHTML = '<tr><td colspan="7" class="empty">No location data</td></tr>'; return; }
+        body.innerHTML = items.map(i => `<tr>
+            <td>${i.pincode||'N/A'}</td><td>${i.district||'N/A'}</td><td>${i.state||'N/A'}</td>
+            <td>${i.taluka||'N/A'}</td><td>${i.postOfficeName||'N/A'}</td>
+            <td>${i.lat||'N/A'}</td><td>${i.lon||'N/A'}</td>
+        </tr>`).join('');
+        setStatus(true, 'Connected');
+    } catch(e) { body.innerHTML = `<tr><td colspan="7" class="empty">Error: ${e.message}</td></tr>`; setStatus(false, 'Error'); }
+}
+
+function connectAndLoad() {
+    API_BASE = document.getElementById('apiUrl').value.replace(/\/+$/, '');
+    refreshAll();
+}
+
+function refreshAll() {
+    loadWeather();
+    loadAqi();
+    loadAlerts();
+    loadLocations();
+}
+
+// Initial load
+window.addEventListener('DOMContentLoaded', refreshAll);
+</script>
+</body>
+</html>
