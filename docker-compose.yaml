@@ -37,6 +37,9 @@ services:
       - OPENSEARCH_AUTH_PASSWORD=weatherTest@123
       - WEATHER_API_KEY=your_openweathermap_api_key_here
       - SCHEDULER_INTERVAL=86400 #Interval in seconds (24h=86400)
+      - AQI_ALERT_THRESHOLD=4
+      - TEMP_HIGH_ALERT=42
+      - TEMP_LOW_ALERT=5
 
   api_server:
     image: weather-api-server:latest
@@ -54,6 +57,7 @@ services:
       - OPENSEARCH_PORT=9200
       - OPENSEARCH_AUTH_USERNAME=admin
       - OPENSEARCH_AUTH_PASSWORD=weatherTest@123
+      - THRESHOLD_ENABLED=true
 
 volumes:
   opensearch_data:

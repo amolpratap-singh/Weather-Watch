@@ -24,7 +24,7 @@ logger.addHandler(handler)
 logger.setLevel(log_level)
 logger.propagate = False
 
-vm_threshold_enable = os.getenv("THRESHOLD_ENABLE", "false").lower() == "true"
+threshold_enable = os.getenv("THRESHOLD_ENABLED", "false").lower() == "true"
 
 RULES_INDEX = "threshold-rules"
 
@@ -32,7 +32,7 @@ RULES_INDEX = "threshold-rules"
 def check_threshold_enabled(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if not vm_threshold_enable:
+        if not threshold_enable:
             return make_response(jsonify(V1Error(405, "Method Not Allowed")), 405)
         return func(*args, **kwargs)
     return wrapper
